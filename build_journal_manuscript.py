@@ -5,7 +5,7 @@ Comprehensive Journal Manuscript Builder strictly addressing all review feedback
    "When Does Federation Help Multi-Lot Smart Parking Forecasting? An Empirical Benchmark on the Birmingham IoT Stream"
 2. Integrates the complete baseline hierarchy:
    - Persistence baseline (y_hat = a_t)
-   - Local-Only Linear AR(4) per lot (100% private, 0 communication)
+   - Local-Only Linear AR(4) per lot (local isolation, avoids cross-facility data sharing, 0 communication)
    - Pooled Linear AR(4) (Centralized linear)
    - Centralized XGBoost
    - Centralized Standard LSTM & Centralized Attention-LSTM
@@ -222,9 +222,9 @@ def build_manuscript():
         "of decentralized model performance. In this study, we conduct an exhaustive empirical benchmark on the Birmingham municipal "
         "smart parking IoT dataset (30 facilities, 35,717 raw readings, 21,868 temporal sequences) to rigorously evaluate when federation "
         "adds value over centralized, local-only, and heuristic alternatives. Our benchmark reveals that a zero-parameter persistence baseline "
-        "achieves a 30-minute Mean Absolute Error (MAE) of 0.0257 (35.2 physical bays), while a 4-weight local-only linear autoregressive model "
-        "per facility—requiring zero communication and zero cross-facility data sharing—achieves an MAE of 0.0126 (14.5 bays), outperforming "
-        "both centralized deep recurrent models (Attention-LSTM MAE: 0.0217; 27.0 bays) and federated neural architectures. Under standard "
+        "achieves a 30-minute Mean Absolute Error (MAE) of 0.0256 (33.4 physical bays), while a 4-weight local-only linear autoregressive model "
+        "per facility—requiring zero communication and zero cross-facility data sharing—achieves an MAE of 0.0126 (13.9 bays), outperforming "
+        "both centralized deep recurrent models (Attention-LSTM MAE: 0.0217; 26.9 bays) and federated neural architectures. Under standard "
         "communication constraints (8 rounds, 2 local epochs), global Federated Averaging (FedAvg) exhibits severe under-training (MAE: 0.0935 ± 0.0032; "
         "118.5 macro bays). Through an IID-shuffled federated control experiment (MAE: 0.0678 ± 0.0019), we demonstrate that compute starvation "
         "provides an empirical decomposition under our experimental protocol: eliminating statistical heterogeneity accounts for 35.8% of the gap, "
@@ -233,7 +233,7 @@ def build_manuscript():
         "slows convergence and split-head architectures (FedPer, MAE: 0.0775) provide partial gains, localized post-aggregation fine-tuning "
         "(Personalized FedAvg) achieves the strongest federated performance with an MAE of 0.0592 ± 0.0004 (82.4 macro bays), representing "
         "a 36.7% relative error reduction over global FedAvg, recovering 47.8% of the centralized performance gap, and compressing cross-facility "
-        "variance (sigma drops by 51.2% from 0.0498 to 0.0243). In a fixed single-seed primary benchmark run (Seed 42), error falls from 0.1007 to 0.0607, "
+        "variance (sigma drops by 51.2% from 0.0498 to 0.0243). In a fixed single-seed primary benchmark run (Seed 42), error falls from 0.1006 (126.8 bays) to 0.0607 (73.2 bays), "
         "recovering 50.6% of the gap. Crucially, network audits confirm that federating a 57k-parameter neural network across 30 clients moves "
         "110.35 MB (105.24 MiB) of weights versus only 1.48 MB (1.41 MiB) for transmitting the entire raw dataset—a 74.6-fold communication overhead. "
         "Consequently, we conclude that federation cannot be justified on bandwidth-reduction grounds, but provides substantial value for "
@@ -325,7 +325,7 @@ def build_manuscript():
     p_c2.paragraph_format.space_before = Pt(2)
     p_c2.paragraph_format.space_after = Pt(3)
     p_c2.add_run("2. Uncovering the Dominance of Local Linear Baselines: ").bold = True
-    p_c2.add_run("We demonstrate that a 4-parameter local-only linear AR model per facility achieves a 30-minute MAE of 0.0126 (14.5 bays), outperforming both centralized Attention-LSTM (0.0217; 27.0 bays) and federated models while requiring zero communication and providing complete data privacy.")
+    p_c2.add_run("We demonstrate that a 4-parameter local-only linear AR model per facility achieves a 30-minute MAE of 0.0126 (13.9 bays), outperforming both centralized Attention-LSTM (0.0217; 26.9 bays) and federated models while requiring zero communication, eliminating cross-facility data sharing, and preserving local data autonomy.")
 
     p_c3 = doc.add_paragraph(style='List Paragraph')
     p_c3.paragraph_format.space_before = Pt(2)
@@ -515,7 +515,13 @@ def build_manuscript():
     )
 
     add_p(
-        "Crucially, to prevent target overlap across evaluation partitions, an embargo / purge gap of one sequence window (g = 1) was enforced at the train/validation and validation/test boundaries per facility along each facility's active operational timeline. For each facility i generating N_i sliding windows, training spans indices [0, floor(0.70 N_i)), followed by an embargo gap omitting window floor(0.70 N_i); validation spans [floor(0.70 N_i) + 1, floor(0.85 N_i)), followed by a second embargo gap omitting window floor(0.85 N_i); and testing spans [floor(0.85 N_i) + 1, N_i). This purge gap ensures that the latest forecast target of any partition (y_60 at offset +7) never equals or overlaps with the earliest target of the subsequent partition (y_30 at offset +7 of the subsequent window). Across all 30 clients, this produces exactly 15,299 training windows (70.15%), 3,246 validation windows (14.88%), and 3,263 unified test windows (14.96%), with exactly 60 boundary transition windows purged across the 21,868 total sliding sequences. The resulting test set exhibits a sample-weighted mean capacity of 1,396.8 bays."
+        "Crucially, to prevent target overlap across evaluation partitions, an embargo / purge gap of one sequence window (g = 1) was enforced at the train/validation and validation/test boundaries per facility along each facility's active operational timeline. "
+        "Formally, for a sequence window starting at time step t_k, the six input observations span [t_k, t_k+5], while the two forecast targets are located at relative indices y_30 = t_k+6 and y_60 = t_k+7. "
+        "For each facility i generating N_i chronological sliding windows, the training partition spans indices [0, floor(0.70 N_i)), ending with window k = floor(0.70 N_i) - 1 whose final target is at t_k+7. "
+        "The subsequent boundary transition window at index floor(0.70 N_i) (starting at t_{k+1}) is purged. Consequently, the first window of the subsequent validation partition begins at index floor(0.70 N_i) + 1 (starting at t_{k+2}), "
+        "so its earliest forecast target y_30 occurs at relative index (t_k+2) + 6 = t_k+8. Because t_k+8 > t_k+7, the latest target of the preceding partition strictly precedes the earliest target of the subsequent partition, "
+        "mathematically eliminating label overlap between adjacent partitions. An identical purge gap is enforced at the validation/test boundary at index floor(0.85 N_i). "
+        "Across all 30 clients, this produces exactly 15,299 training windows (70.15%), 3,246 validation windows (14.88%), and 3,263 unified test windows (14.96%), with exactly 60 boundary transition windows purged across the 21,868 total sliding sequences. The resulting test set exhibits a sample-weighted mean capacity of 1,396.8 bays."
     )
 
     add_p(
@@ -619,7 +625,7 @@ def build_manuscript():
     p_b2.paragraph_format.space_before = Pt(2)
     p_b2.paragraph_format.space_after = Pt(2)
     p_b2.add_run("2. Local-Only Linear AR(4) Baseline (Fully Private): ").bold = True
-    p_b2.add_run("Each client independently fits an autoregressive linear ridge regression model on its own past 4 availability observations (a_{t-3}, ..., a_t). Employs strictly local data with zero cross-lot communication, providing 100% privacy and zero infrastructure overhead.")
+    p_b2.add_run("Each client independently fits an autoregressive linear ridge regression model on its own past 4 availability observations (a_{t-3}, ..., a_t). Employs strictly local data with zero cross-lot communication, eliminating cross-facility data sharing, avoiding centralized exposure of raw telemetry, and incurring zero infrastructure overhead.")
 
     p_b3 = doc.add_paragraph(style='List Paragraph')
     p_b3.paragraph_format.space_before = Pt(2)
@@ -851,7 +857,7 @@ def build_manuscript():
     p_r4.paragraph_format.space_before = Pt(2)
     p_r4.paragraph_format.space_after = Pt(4)
     p_r4.add_run("4. Physical Space Error Scaling: ").bold = True
-    p_r4.add_run("In the primary single-run benchmark (Table 2), Global FedAvg incurs an unweighted macro space error of 127.1 bays (130.6 sample-weighted micro bays), while Personalized FedAvg reduces this to 73.1 bays (75.0 micro bays), achieving a 42.5% reduction in physical parking allocation error. Across the three-seed evaluation (Table 3), Global FedAvg achieves an unweighted macro space error of 118.5 ± 2.6 bays (121.3 ± 2.8 micro bays), whereas Personalized FedAvg reduces space error to 82.4 ± 0.4 bays (84.0 ± 0.4 micro bays). In stark contrast, the zero-communication Local Linear AR(4) baseline incurs only 14.5 bays of space error, demonstrating that if municipal governance permits local-only processing, private linear models are overwhelmingly superior.")
+    p_r4.add_run("In the primary single-run benchmark (Table 2), Global FedAvg incurs an unweighted macro space error of 126.8 bays (130.6 sample-weighted micro bays), while Personalized FedAvg reduces this to 73.2 bays (75.0 micro bays), achieving a 42.3% reduction in physical parking allocation error. Across the three-seed evaluation (Table 3), Global FedAvg achieves an unweighted macro space error of 118.5 ± 2.6 bays (121.3 ± 2.8 micro bays), whereas Personalized FedAvg reduces space error to 82.4 ± 0.4 bays (84.0 ± 0.4 micro bays). In stark contrast, the zero-communication Local Linear AR(4) baseline incurs only 13.9 bays of unweighted macro space error (17.6 sample-weighted micro bays), demonstrating that if municipal governance permits local-only processing, private linear models are overwhelmingly superior.")
 
     # Embedded Figure 3: Boxplot
     if os.path.exists("results/fig2_personalization_distribution_boxplot.png"):
@@ -935,20 +941,20 @@ def build_manuscript():
 
     add_p(
         "Consequently, if a parking operator possesses private edge compute and is not required to coordinate with outside operators, the optimal "
-        "engineering decision is to deploy a local linear autoregressive model. It achieves superior accuracy (14.5 bays mean error), incurs "
-        "zero communication overhead, requires no GPU hardware, and maintains complete local data containment without cross-facility communication."
+        "engineering decision is to deploy a local linear autoregressive model. It achieves superior accuracy (13.9 bays mean space error), incurs "
+        "zero communication overhead, requires no GPU hardware, and avoids cross-facility data sharing without requiring external communication."
     )
 
     add_h2("5.2 Under-Training vs. Non-IID Drift: Quantitative Decomposition")
     add_p(
-        "Prior studies frequently attribute FedAvg's poor performance to catastrophic 'non-IID spatial collapse'. Our empirical findings refute "
-        "this simplistic explanation. While parking facilities vary in physical capacity and peak hours, the underlying functional relationship—namely, "
+        "Prior studies frequently attribute FedAvg's poor performance to catastrophic 'non-IID spatial collapse'. However, our empirical findings challenge "
+        "the assumption that non-IID spatial collapse is the sole driver of decentralized performance degradation. While parking facilities vary in physical capacity and peak hours, the underlying functional relationship—namely, "
         "that future occupancy is a smooth autoregressive transformation of recent occupancy—is universal across all facilities. Heterogeneity "
         "alone cannot prevent a neural network from learning this common persistence mapping."
     )
 
     add_p(
-        "Instead, the primary culprit is compute starvation under communication constraints. Federated clients in an 8-round protocol execute "
+        "Instead, our experimental decomposition indicates that optimization under-training under communication round constraints is a major contributing factor. Federated clients in an 8-round protocol execute "
         "barely ~200 local gradient steps, compared to over 14,000 steps executed by the centralized model. Our IID-shuffled control experiment "
         "(Table 3) provides an empirical decomposition of this division under our benchmarking protocol: statistical heterogeneity accounts for 35.8% of the performance deficit, "
         "while the remaining 64.2% is an empirical residual deficit strongly consistent with compute constraints and optimization under-training. Local personalization acts as a high-leverage compensation mechanism: by fine-tuning the under-converged "
@@ -1004,7 +1010,7 @@ def build_manuscript():
         ("Parameter Count", "57,474 weights (224.51 KiB / 229.90 KB)", "57,474 weights (224.51 KiB / 229.90 KB)", "4 scalar weights (16 bytes) per lot"),
         ("Total Network Data Moved", "1.48 MB / 1.41 MiB (raw CSV stream)", "110.35 MB / 105.24 MiB (480 transfers)", "0.00 B (strictly zero communication)"),
         ("Total Local Gradient Steps", "14,370 Adam steps (pooled)", "~256 Adam steps per client", "1 closed-form Ridge solve per lot"),
-        ("Privacy & Sovereignty", "Zero (all data pooled in cloud)", "High (data stays on edge nodes)", "Absolute (100% private, no federation)")
+        ("Privacy & Governance", "Centralized exposure (all data pooled in cloud)", "Decentralized containment (data stays on edge nodes)", "Local isolation (avoids cross-facility data sharing, no federation)")
     ]
 
     for i, row in enumerate(t5_rows, start=1):
@@ -1046,17 +1052,17 @@ def build_manuscript():
 
     add_p(
         "Our findings demonstrate that a 4-weight local linear autoregressive model per facility achieves superior accuracy (30-minute MAE: 0.0126; "
-        "14.5 bays), outperforming both centralized deep neural networks (0.0217; 27.0 bays) and federated models while requiring zero communication "
-        "and preserving absolute data privacy. Under practical communication constraints (8 rounds, 2 local epochs), global FedAvg under-trains severely, "
-        "achieving a 30-minute MAE of 0.0935 ± 0.0032 (118.5 macro bays in multi-seed evaluation, and 0.1007 / 127.1 bays in the primary single-seed benchmark). "
-        "This degradation is primarily driven by compute starvation (~256 local Adam updates per client versus 14,370 centralized steps) rather than non-IID collapse: "
+        "13.9 bays), outperforming both centralized deep neural networks (0.0217; 26.9 bays) and federated models while requiring zero communication "
+        "and avoiding cross-facility data sharing. Under practical communication constraints (8 rounds, 2 local epochs), global FedAvg under-trains severely, "
+        "achieving a 30-minute MAE of 0.0935 ± 0.0032 (118.5 macro bays in multi-seed evaluation, and 0.1006 / 126.8 bays in the primary single-seed benchmark). "
+        "Our experimental decomposition indicates that this degradation is strongly consistent with optimization under-training under communication round constraints (~256 local Adam updates per client versus 14,370 centralized steps) alongside statistical heterogeneity: "
         "an IID-shuffled federated control provides an empirical decomposition attributing 35.8% of the performance gap to statistical heterogeneity, with the remaining 64.2% residual deficit being strongly consistent with compute constraints (~256 local Adam updates per client versus 14,370 centralized steps) rather than non-IID collapse. "
         "Post-aggregation personalization fine-tuning mitigates this gap, reducing error to 0.0592 ± 0.0004 (82.4 macro bays; a 36.7% relative reduction over FedAvg, "
         "recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark), while compressing between-lot variance "
         "by 51.2%. Furthermore, network audits confirm that federating neural networks moves 110.35 MB (105.24 MiB) of weights across 8 rounds versus only 1.48 MB "
         "(1.41 MiB) for streaming the raw sensor telemetry—a 74.6-fold communication overhead. Consequently, federated parking forecasting cannot be justified on "
-        "bandwidth-reduction grounds, but provides substantial value for multi-stakeholder commercial confidentiality, institutional data sovereignty, and legal compliance "
-        "when paired with local personalization."
+        "bandwidth-reduction grounds, but provides substantial value for multi-stakeholder commercial confidentiality and institutional data governance "
+        "when paired with local personalization, though regulatory compliance ultimately depends on specific deployment environments, applicable data protection frameworks, and complementary differential privacy safeguards."
     )
 
     # ==================== DECLARATIONS ====================
