@@ -37,7 +37,7 @@ Comprehensive Journal Manuscript Builder strictly addressing all review feedback
    - Attention: Bahdanau et al. (ICLR 2015); XGBoost: Chen & Guestrin (KDD 2016)
 7. Full author metadata:
    - Devesh Munagala 1,* and Abhinav 1
-   - Institutional footnote for Abhinav (mononym legal single-name format; registration numbers omitted per journal standards)
+   - Institutional footnote for Abhinav (mononym single-name author format; registration numbers omitted per journal standards)
 8. Open science & reproducibility:
    - GitHub Repository: https://github.com/itsdevesh23/ParkSense-AI
 9. Edge claim qualification:
@@ -305,7 +305,7 @@ def build_manuscript():
     p_q3.paragraph_format.space_before = Pt(2)
     p_q3.paragraph_format.space_after = Pt(2)
     p_q3.add_run("3. Bandwidth vs. Governance Justification: ").bold = True
-    p_q3.add_run("Does federating neural networks save communication bandwidth on scalar IoT streams, or must FL be justified strictly on commercial data governance and institutional sovereignty grounds?")
+    p_q3.add_run("Does federating neural networks save communication bandwidth on scalar IoT streams, or should FL be justified primarily by commercial data governance and institutional data sovereignty considerations?")
 
     add_p(
         "To resolve these questions, this paper presents an exhaustive empirical benchmark on the Birmingham municipal smart parking IoT "
@@ -331,7 +331,7 @@ def build_manuscript():
     p_c3.paragraph_format.space_before = Pt(2)
     p_c3.paragraph_format.space_after = Pt(3)
     p_c3.add_run("3. Disentangling Under-Training from Non-IID Drift: ").bold = True
-    p_c3.add_run("Through compute step audits, round scaling (R in {4, 8, 12, 16}), batch size analysis, and an IID-shuffled federated control (MAE: 0.0678 ± 0.0019), we prove that FedAvg's performance deficit is strongly consistent with optimization under-training (~256 local Adam steps per client versus 14,370 centralized steps) under practical communication budgets rather than insurmountable spatial drift. Personalization fine-tuning resolves this under-training, achieving MAE 0.0592 ± 0.0004 (a 36.7% relative reduction over FedAvg, recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark).")
+    p_c3.add_run("Through compute step audits, round scaling (R in {4, 8, 12, 16}), batch size analysis, and an IID-shuffled federated control (MAE: 0.0678 ± 0.0019), our experimental decomposition indicates that 35.8% of the performance gap is attributable to statistical heterogeneity, while the remaining 64.2% residual deficit is strongly consistent with optimization under-training under communication round constraints (~256 local Adam steps per client versus 14,370 centralized steps), though definitive causal proof would require exhaustive compute-parity experiments across extended rounds. Personalization fine-tuning resolves this under-training, achieving MAE 0.0592 ± 0.0004 (a 36.7% relative reduction over FedAvg, recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark).")
 
     p_c4 = doc.add_paragraph(style='List Paragraph')
     p_c4.paragraph_format.space_before = Pt(2)
@@ -445,7 +445,7 @@ def build_manuscript():
         ("Li et al. (2020) [19]", "FedProx (Proximal term)", "Federated NLP & vision", "Decentralized / private", "Yes (partial)", "Proximal weight hyperparameter requires extensive tuning"),
         ("Attiah et al. (2025) [16]", "FedPark (Crowdsensing)", "Crowdsourced mobile logs", "Decentralized / private", "No", "Focuses on on-street crowdsensing; lacks local linear baselines"),
         ("Rocco di Torrepadula et al. (2025) [22]", "FedFlow (Personalized FL)", "Mobility passenger flows", "Decentralized / private", "No", "Does not evaluate smart parking or local linear baselines"),
-        ("This Study (2026)", "Personalized Fed-Attention-LSTM", "Birmingham IoT (30 lots)", "Private / Multi-stakeholder", "Yes (Persistence + Local Linear)", "Evaluated on single municipal stream; 73-day span")
+        ("This Study (2026)", "Personalized Fed-Attention-LSTM", "Birmingham IoT (30 lots)", "Decentralized containment / Multi-operator governance", "Yes (Persistence + Local Linear)", "Evaluated on single municipal stream; 73-day span")
     ]
 
     for i, row in enumerate(t1_rows, start=1):
@@ -720,7 +720,7 @@ def build_manuscript():
 
     t2_data_30 = [
         ("Persistence Baseline (y_hat = a_t)", "0.0256", "0.0386", "0.0249", "0.0134", "33.4"),
-        ("Local-Only Linear AR(4) (Private)", "0.0126", "0.0179", "0.0125", "0.0049", "13.9"),
+        ("Local-Only Linear AR(4) (Local isolation)", "0.0126", "0.0179", "0.0125", "0.0049", "13.9"),
         ("Pooled Linear AR(4) (Centralized)", "0.0129", "0.0189", "0.0130", "0.0049", "14.7"),
         ("Centralized XGBoost [4]", "0.0145", "0.0201", "0.0152", "0.0057", "17.5"),
         ("Centralized Standard LSTM [24]", "0.0218", "0.0300", "0.0232", "0.0129", "25.2"),
@@ -731,7 +731,7 @@ def build_manuscript():
 
     t2_data_60 = [
         ("Persistence Baseline (y_hat = a_t)", "0.0492", "0.0715", "0.0477", "0.0250", "64.2"),
-        ("Local-Only Linear AR(4) (Private)", "0.0248", "0.0350", "0.0243", "0.0094", "28.4"),
+        ("Local-Only Linear AR(4) (Local isolation)", "0.0248", "0.0350", "0.0243", "0.0094", "28.4"),
         ("Pooled Linear AR(4) (Centralized)", "0.0259", "0.0375", "0.0266", "0.0095", "30.4"),
         ("Centralized XGBoost [4]", "0.0245", "0.0343", "0.0264", "0.0112", "30.1"),
         ("Centralized Standard LSTM [24]", "0.0291", "0.0402", "0.0305", "0.0117", "35.5"),
@@ -957,7 +957,7 @@ def build_manuscript():
         "Instead, our experimental decomposition indicates that optimization under-training under communication round constraints is a major contributing factor. Federated clients in an 8-round protocol execute "
         "barely ~200 local gradient steps, compared to over 14,000 steps executed by the centralized model. Our IID-shuffled control experiment "
         "(Table 3) provides an empirical decomposition of this division under our benchmarking protocol: statistical heterogeneity accounts for 35.8% of the performance deficit, "
-        "while the remaining 64.2% is an empirical residual deficit strongly consistent with compute constraints and optimization under-training. Local personalization acts as a high-leverage compensation mechanism: by fine-tuning the under-converged "
+        "while the remaining 64.2% is an empirical residual deficit strongly consistent with compute constraints and optimization under-training, though definitive causal proof would require exhaustive compute-parity experiments across extended rounds. Local personalization acts as a high-leverage compensation mechanism: by fine-tuning the under-converged "
         "global recurrent features on lot-specific data, the model rapidly aligns its output scale to local capacity, recovering 50.6% of the centralized gap."
     )
 
@@ -982,10 +982,11 @@ def build_manuscript():
     add_p(
         "Therefore, federated learning increases communication volume by exactly 74.6-fold (110.35 MB vs. 1.48 MB) compared to streaming uncompressed "
         "raw sensor telemetry. Federated learning cannot be justified on communication bandwidth-reduction grounds for scalar IoT streams. Instead, "
-        "federation is justified strictly on institutional data governance, multi-stakeholder commercial confidentiality, and legal privacy grounds. "
-        "Competing private parking operators (e.g., NCP vs. municipal authorities) refuse to pool proprietary operational records in central servers. "
-        "Federated learning establishes the essential organizational and legal framework enabling cross-operator predictive coordination without "
-        "exposing commercial trade secrets."
+        "federated learning may be justified by institutional data-governance requirements and multi-stakeholder commercial confidentiality, "
+        "even when it increases communication volume. However, regulatory compliance and formal privacy guarantees depend on the deployment context "
+        "and may require additional safeguards, such as secure aggregation and differential privacy. Competing private parking operators "
+        "(e.g., NCP vs. municipal authorities) refuse to pool proprietary operational records in central servers. Federated learning establishes "
+        "a collaborative organizational framework enabling cross-operator predictive coordination without requiring the centralized pooling of commercial trade secrets."
     )
 
     # Table 5: Resource & Hardware Audit
@@ -1056,7 +1057,7 @@ def build_manuscript():
         "and avoiding cross-facility data sharing. Under practical communication constraints (8 rounds, 2 local epochs), global FedAvg under-trains severely, "
         "achieving a 30-minute MAE of 0.0935 ± 0.0032 (118.5 macro bays in multi-seed evaluation, and 0.1006 / 126.8 bays in the primary single-seed benchmark). "
         "Our experimental decomposition indicates that this degradation is strongly consistent with optimization under-training under communication round constraints (~256 local Adam updates per client versus 14,370 centralized steps) alongside statistical heterogeneity: "
-        "an IID-shuffled federated control provides an empirical decomposition attributing 35.8% of the performance gap to statistical heterogeneity, with the remaining 64.2% residual deficit being strongly consistent with compute constraints (~256 local Adam updates per client versus 14,370 centralized steps) rather than non-IID collapse. "
+        "an IID-shuffled federated control provides an empirical decomposition attributing 35.8% of the performance gap to statistical heterogeneity, with the remaining 64.2% residual deficit being strongly consistent with compute constraints (~256 local Adam updates per client versus 14,370 centralized steps) rather than non-IID collapse (though definitive causal proof would require exhaustive compute-parity experiments across extended rounds). "
         "Post-aggregation personalization fine-tuning mitigates this gap, reducing error to 0.0592 ± 0.0004 (82.4 macro bays; a 36.7% relative reduction over FedAvg, "
         "recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark), while compressing between-lot variance "
         "by 51.2%. Furthermore, network audits confirm that federating neural networks moves 110.35 MB (105.24 MiB) of weights across 8 rounds versus only 1.48 MB "
