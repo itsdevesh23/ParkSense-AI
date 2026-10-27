@@ -19,8 +19,8 @@
     "test": 0.15
   },
   "total_global_train_samples": 15299,
-  "total_global_val_samples": 3276,
-  "total_global_test_samples": 3293,
+  "total_global_val_samples": 3246,
+  "total_global_test_samples": 3263,
   "clients": {
     "BHMBCCMKT01": {
       "client_index": 0,
@@ -30,8 +30,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_00_BHMBCCMKT01.npz"
     },
     "BHMBCCPST01": {
@@ -42,8 +42,8 @@
       "resampled_steps": 1278,
       "total_windows": 781,
       "train_samples": 546,
-      "val_samples": 117,
-      "test_samples": 118,
+      "val_samples": 116,
+      "test_samples": 117,
       "file": "data/processed\\client_01_BHMBCCPST01.npz"
     },
     "BHMBCCSNH01": {
@@ -54,8 +54,8 @@
       "resampled_steps": 1296,
       "total_windows": 792,
       "train_samples": 554,
-      "val_samples": 119,
-      "test_samples": 119,
+      "val_samples": 118,
+      "test_samples": 118,
       "file": "data/processed\\client_02_BHMBCCSNH01.npz"
     },
     "BHMBCCTHL01": {
@@ -66,8 +66,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_03_BHMBCCTHL01.npz"
     },
     "BHMBRCBRG01": {
@@ -78,8 +78,8 @@
       "resampled_steps": 1188,
       "total_windows": 726,
       "train_samples": 508,
-      "val_samples": 109,
-      "test_samples": 109,
+      "val_samples": 108,
+      "test_samples": 108,
       "file": "data/processed\\client_04_BHMBRCBRG01.npz"
     },
     "BHMBRCBRG02": {
@@ -90,8 +90,8 @@
       "resampled_steps": 1188,
       "total_windows": 726,
       "train_samples": 508,
-      "val_samples": 109,
-      "test_samples": 109,
+      "val_samples": 108,
+      "test_samples": 108,
       "file": "data/processed\\client_05_BHMBRCBRG02.npz"
     },
     "BHMBRCBRG03": {
@@ -102,8 +102,8 @@
       "resampled_steps": 1188,
       "total_windows": 726,
       "train_samples": 508,
-      "val_samples": 109,
-      "test_samples": 109,
+      "val_samples": 108,
+      "test_samples": 108,
       "file": "data/processed\\client_06_BHMBRCBRG03.npz"
     },
     "BHMBRTARC01": {
@@ -114,8 +114,8 @@
       "resampled_steps": 90,
       "total_windows": 55,
       "train_samples": 38,
-      "val_samples": 8,
-      "test_samples": 9,
+      "val_samples": 7,
+      "test_samples": 8,
       "file": "data/processed\\client_07_BHMBRTARC01.npz"
     },
     "BHMEURBRD01": {
@@ -126,8 +126,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_08_BHMEURBRD01.npz"
     },
     "BHMEURBRD02": {
@@ -138,8 +138,8 @@
       "resampled_steps": 1278,
       "total_windows": 781,
       "train_samples": 546,
-      "val_samples": 117,
-      "test_samples": 118,
+      "val_samples": 116,
+      "test_samples": 117,
       "file": "data/processed\\client_09_BHMEURBRD02.npz"
     },
     "BHMMBMMBX01": {
@@ -150,8 +150,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_10_BHMMBMMBX01.npz"
     },
     "BHMNCPHST01": {
@@ -162,8 +162,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_11_BHMNCPHST01.npz"
     },
     "BHMNCPLDH01": {
@@ -174,8 +174,8 @@
       "resampled_steps": 1296,
       "total_windows": 792,
       "train_samples": 554,
-      "val_samples": 119,
-      "test_samples": 119,
+      "val_samples": 118,
+      "test_samples": 118,
       "file": "data/processed\\client_12_BHMNCPLDH01.npz"
     },
     "BHMNCPNHS01": {
@@ -186,8 +186,8 @@
       "resampled_steps": 1044,
       "total_windows": 638,
       "train_samples": 446,
-      "val_samples": 96,
-      "test_samples": 96,
+      "val_samples": 95,
+      "test_samples": 95,
       "file": "data/processed\\client_13_BHMNCPNHS01.npz"
     },
     "BHMNCPNST01": {
@@ -198,8 +198,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_14_BHMNCPNST01.npz"
     },
     "BHMNCPPLS01": {
@@ -210,8 +210,8 @@
       "resampled_steps": 1296,
       "total_windows": 792,
       "train_samples": 554,
-      "val_samples": 119,
-      "test_samples": 119,
+      "val_samples": 118,
+      "test_samples": 118,
       "file": "data/processed\\client_15_BHMNCPPLS01.npz"
     },
     "BHMNCPRAN01": {
@@ -222,8 +222,8 @@
       "resampled_steps": 1188,
       "total_windows": 726,
       "train_samples": 508,
-      "val_samples": 109,
-      "test_samples": 109,
+      "val_samples": 108,
+      "test_samples": 108,
       "file": "data/processed\\client_16_BHMNCPRAN01.npz"
     },
     "Broad Street": {
@@ -234,8 +234,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_17_Broad Street.npz"
     },
     "Bull Ring": {
@@ -246,8 +246,8 @@
       "resampled_steps": 1188,
       "total_windows": 726,
       "train_samples": 508,
-      "val_samples": 109,
-      "test_samples": 109,
+      "val_samples": 108,
+      "test_samples": 108,
       "file": "data/processed\\client_18_Bull Ring.npz"
     },
     "NIA Car Parks": {
@@ -258,8 +258,8 @@
       "resampled_steps": 1206,
       "total_windows": 737,
       "train_samples": 515,
-      "val_samples": 111,
-      "test_samples": 111,
+      "val_samples": 110,
+      "test_samples": 110,
       "file": "data/processed\\client_19_NIA Car Parks.npz"
     },
     "NIA North": {
@@ -270,8 +270,8 @@
       "resampled_steps": 162,
       "total_windows": 99,
       "train_samples": 69,
-      "val_samples": 15,
-      "test_samples": 15,
+      "val_samples": 14,
+      "test_samples": 14,
       "file": "data/processed\\client_20_NIA North.npz"
     },
     "NIA South": {
@@ -282,8 +282,8 @@
       "resampled_steps": 1206,
       "total_windows": 737,
       "train_samples": 515,
-      "val_samples": 111,
-      "test_samples": 111,
+      "val_samples": 110,
+      "test_samples": 110,
       "file": "data/processed\\client_21_NIA South.npz"
     },
     "Others-CCCPS105a": {
@@ -294,8 +294,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_22_Others-CCCPS105a.npz"
     },
     "Others-CCCPS119a": {
@@ -306,8 +306,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_23_Others-CCCPS119a.npz"
     },
     "Others-CCCPS133": {
@@ -318,8 +318,8 @@
       "resampled_steps": 1296,
       "total_windows": 792,
       "train_samples": 554,
-      "val_samples": 119,
-      "test_samples": 119,
+      "val_samples": 118,
+      "test_samples": 118,
       "file": "data/processed\\client_24_Others-CCCPS133.npz"
     },
     "Others-CCCPS135a": {
@@ -330,8 +330,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_25_Others-CCCPS135a.npz"
     },
     "Others-CCCPS202": {
@@ -342,8 +342,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_26_Others-CCCPS202.npz"
     },
     "Others-CCCPS8": {
@@ -354,8 +354,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_27_Others-CCCPS8.npz"
     },
     "Others-CCCPS98": {
@@ -366,8 +366,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_28_Others-CCCPS98.npz"
     },
     "Shopping": {
@@ -378,8 +378,8 @@
       "resampled_steps": 1314,
       "total_windows": 803,
       "train_samples": 562,
-      "val_samples": 120,
-      "test_samples": 121,
+      "val_samples": 119,
+      "test_samples": 120,
       "file": "data/processed\\client_29_Shopping.npz"
     }
   }

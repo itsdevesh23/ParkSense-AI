@@ -138,20 +138,25 @@ def generate_sliding_windows(
 def chronological_split(
     X: np.ndarray, y_30: np.ndarray, y_60: np.ndarray,
     train_frac: float = 0.70,
-    val_frac: float = 0.15
+    val_frac: float = 0.15,
+    purge_gap: int = 1
 ) -> Dict[str, Tuple[np.ndarray, np.ndarray, np.ndarray]]:
     """
     Partitions sequentially: 70% Train, 15% Validation, 15% Test.
-    Strict chronological ordering eliminates future-leakage risk.
+    An embargo/purge gap (default: 1 sequence window) is placed at the
+    train/validation and validation/test boundaries to eliminate target overlap
+    across evaluation partitions.
     """
     n = len(X)
     train_end = int(n * train_frac)
+    val_start = train_end + purge_gap
     val_end = int(n * (train_frac + val_frac))
+    test_start = val_end + purge_gap
 
     return {
         "train": (X[:train_end], y_30[:train_end], y_60[:train_end]),
-        "val": (X[train_end:val_end], y_30[train_end:val_end], y_60[train_end:val_end]),
-        "test": (X[val_end:], y_30[val_end:], y_60[val_end:])
+        "val": (X[val_start:val_end], y_30[val_start:val_end], y_60[val_start:val_end]),
+        "test": (X[test_start:], y_30[test_start:], y_60[test_start:])
     }
 
 

@@ -30,6 +30,11 @@ build/
 scratch/
 apply_final_edits.py
 apply_review3_fixes.py
+apply_comprehensive_review4_fixes.py
+eval_purged_all.py
+test_purged_eval.py
+find_att*.py
+inspect_*.py
 test_tbl.docx
 template_dump.txt
 corrections_dump.txt

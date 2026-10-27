@@ -20,7 +20,7 @@ Comprehensive Journal Manuscript Builder strictly addressing all review feedback
    - 1,988 active facility-days
    - Regularized onto 18 daytime slots (08:00-16:30) via intra-day interpolation
    - Intra-day sliding windows (L=6, H=2 -> 8 steps = 4h span), yielding exactly 18 - 8 + 1 = 11 sequences/day
-   - 1,988 x 11 = 21,868 total sequences (15,299 train / 3,276 val / 3,293 test)
+   - 1,988 x 11 = 21,868 total sequences (15,299 train / 3,246 val / 3,263 test, 60 purged boundary windows)
    - Per-facility chronological partition protocol
 5. Accurately verifies model parameter count:
    - 57,474 trainable float32 parameters (~224.5 KB)
@@ -227,7 +227,7 @@ def build_manuscript():
         "both centralized deep recurrent models (Attention-LSTM MAE: 0.0217; 27.0 bays) and federated neural architectures. Under standard "
         "communication constraints (8 rounds, 2 local epochs), global Federated Averaging (FedAvg) exhibits severe under-training (MAE: 0.0935 ± 0.0032; "
         "118.5 macro bays). Through an IID-shuffled federated control experiment (MAE: 0.0678 ± 0.0019), we demonstrate that compute starvation "
-        "under communication round limits (~256 local Adam steps per client versus ~14,340 for centralized models) accounts for 64.2% of "
+        "under communication round limits (~256 local Adam steps per client versus 14,370 for centralized models) accounts for 64.2% of "
         "this performance gap, while non-IID statistical heterogeneity accounts for 35.8%. While proximal regularization (FedProx, MAE: 0.1305) "
         "slows convergence and split-head architectures (FedPer, MAE: 0.0775) provide partial gains, localized post-aggregation fine-tuning "
         "(Personalized FedAvg) achieves the strongest federated performance with an MAE of 0.0592 ± 0.0004 (82.4 macro bays), representing "
@@ -236,7 +236,7 @@ def build_manuscript():
         "recovering 50.6% of the gap. Crucially, network audits confirm that federating a 57k-parameter neural network across 30 clients moves "
         "110.35 MB (105.24 MiB) of weights versus only 1.48 MB (1.41 MiB) for transmitting the entire raw dataset—a 74.6-fold communication overhead. "
         "Consequently, we conclude that federation cannot be justified on bandwidth-reduction grounds, but provides substantial value for "
-        "multi-stakeholder commercial confidentiality, institutional data sovereignty, and legal compliance when paired with local personalization."
+        "multi-stakeholder commercial confidentiality and institutional data sovereignty when paired with local personalization."
     )
     add_p(abstract_text, space_after=8)
 
@@ -245,7 +245,7 @@ def build_manuscript():
     r_kw_label = p_kw.add_run("Keywords: ")
     r_kw_label.bold = True
     r_kw_label.font.color.rgb = RGBColor(0x1F, 0x38, 0x64)
-    r_kw_text = p_kw.add_run("Federated learning; Smart parking forecasting; Empirical benchmark; Local linear baselines; Data governance; Compute parity; Intelligent transportation systems")
+    r_kw_text = p_kw.add_run("Federated learning; Smart parking forecasting; Empirical benchmark; Local linear baselines; Intelligent transportation systems")
     r_kw_text.font.size = Pt(10.5)
 
     # ==================== 1. INTRODUCTION ====================
@@ -304,7 +304,7 @@ def build_manuscript():
     p_q3.paragraph_format.space_before = Pt(2)
     p_q3.paragraph_format.space_after = Pt(2)
     p_q3.add_run("3. Bandwidth vs. Governance Justification: ").bold = True
-    p_q3.add_run("Does federating neural networks save communication bandwidth on scalar IoT streams, or must FL be justified strictly on commercial data governance and legal sovereignty grounds?")
+    p_q3.add_run("Does federating neural networks save communication bandwidth on scalar IoT streams, or must FL be justified strictly on commercial data governance and institutional sovereignty grounds?")
 
     add_p(
         "To resolve these questions, this paper presents an exhaustive empirical benchmark on the Birmingham municipal smart parking IoT "
@@ -318,7 +318,7 @@ def build_manuscript():
     p_c1.paragraph_format.space_before = Pt(2)
     p_c1.paragraph_format.space_after = Pt(3)
     p_c1.add_run("1. Comprehensive Multi-Horizon Benchmark: ").bold = True
-    p_c1.add_run("We construct a rigorous, chronological evaluation benchmark across 3,293 unified test windows, comparing eight distinct forecasting models across both 30-minute and 60-minute lookahead horizons under exact physical bay capacity scaling.")
+    p_c1.add_run("We construct a rigorous, chronological evaluation benchmark across 3,263 unified test windows, comparing eight distinct forecasting models across both 30-minute and 60-minute lookahead horizons under exact physical bay capacity scaling.")
 
     p_c2 = doc.add_paragraph(style='List Paragraph')
     p_c2.paragraph_format.space_before = Pt(2)
@@ -330,7 +330,7 @@ def build_manuscript():
     p_c3.paragraph_format.space_before = Pt(2)
     p_c3.paragraph_format.space_after = Pt(3)
     p_c3.add_run("3. Disentangling Under-Training from Non-IID Drift: ").bold = True
-    p_c3.add_run("Through compute step audits, round scaling (R in {4, 8, 12, 16}), batch size analysis, and an IID-shuffled federated control (MAE: 0.0678 ± 0.0019), we prove that FedAvg's error is primarily driven by compute starvation (~256 local Adam steps per client versus ~14,340 centralized steps) rather than insurmountable spatial drift. Personalization fine-tuning resolves this under-training, achieving MAE 0.0592 ± 0.0004 (a 36.7% relative reduction over FedAvg, recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark).")
+    p_c3.add_run("Through compute step audits, round scaling (R in {4, 8, 12, 16}), batch size analysis, and an IID-shuffled federated control (MAE: 0.0678 ± 0.0019), we prove that FedAvg's performance deficit is strongly consistent with optimization under-training (~256 local Adam steps per client versus 14,370 centralized steps) under practical communication budgets rather than insurmountable spatial drift. Personalization fine-tuning resolves this under-training, achieving MAE 0.0592 ± 0.0004 (a 36.7% relative reduction over FedAvg, recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark).")
 
     p_c4 = doc.add_paragraph(style='List Paragraph')
     p_c4.paragraph_format.space_before = Pt(2)
@@ -491,7 +491,7 @@ def build_manuscript():
     p_d3.paragraph_format.space_before = Pt(2)
     p_d3.paragraph_format.space_after = Pt(2)
     p_d3.add_run("3. Sensor Polling Jitter & Session Regularization: ").bold = True
-    p_d3.add_run("Raw sensor polling timestamps jitter around the nominal 30-minute intervals (e.g., 07:59:42, 09:32:46). Raw observations are regularized into 18 uniform daytime slots (08:00 to 16:30). Multiple sensor bursts within a single slot are resolved by taking the latest valid update. Incomplete lot-days with sparse readings (249 out of 1,988 lot-days) were regularized onto the continuous 18-slot daytime schedule using linear time interpolation bounded strictly within operating hours (08:00 to 16:30), avoiding any interpolation across nightly shutdown gaps.")
+    p_d3.add_run("Raw sensor polling timestamps jitter around the nominal 30-minute intervals (e.g., 07:59:42, 09:32:46). Raw observations are regularized into 18 uniform daytime slots (08:00 to 16:30). Duplicate sensor timestamps within each session are deduplicated by retaining the initial valid transmission (keep='first'), followed by regularizing readings onto the uniform 18-slot daytime schedule (08:00 to 16:30). Incomplete lot-days with sparse readings (249 out of 1,988 lot-days) were regularized onto the continuous 18-slot daytime schedule using linear time interpolation bounded strictly within operating hours (08:00 to 16:30), avoiding any interpolation across nightly shutdown gaps.")
 
     p_d4 = doc.add_paragraph(style='List Paragraph')
     p_d4.paragraph_format.space_before = Pt(2)
@@ -514,24 +514,14 @@ def build_manuscript():
     )
 
     add_p(
-        "Crucially, to preserve all 30 parking facilities in the evaluation set, the chronological 70% training, 15% validation, and 15% testing split "
-        "was applied at the individual sliding sequence window level along each facility's active operational timeline. For each facility i generating "
-        "N_i sliding windows, the partition cutoff indices were set to floor(0.70 N_i) for training and floor(0.85 N_i) for validation, with the remaining "
-        "windows assigned to testing. This window-level partition ensures exact proportional representation across all facilities regardless of timeline "
-        "truncation: facilities with short operating periods (e.g., BHMBRTARC01 with 55 total windows, NIA North with 99 total windows) and full-duration "
-        "garages (803 total windows) each contribute strictly 70% to training, 15% to validation, and 15% to testing. Across all 30 clients, this produces "
-        "exactly 15,299 training windows (69.96%), 3,276 validation windows (14.98%), and 3,293 unified test windows (15.06%), summing to exactly 21,868 windows. "
-        "Because partitioning operates at sequence cutoffs, partition window counts are not multiples of the daily window multiplier (11), as fractional "
-        "day sequences are partitioned continuously along the active timeline. Across the entire testbed, exactly one transition window occurs across partition "
-        "boundaries per facility (30 out of 3,293 test windows, or 0.91%); an empirical audit with boundary windows excluded confirmed zero change in reported "
-        "MAE and RMSE to four decimal places. The resulting test set exhibits a sample-weighted mean capacity of 1,396.8 bays."
+        "Crucially, to prevent target overlap across evaluation partitions, an embargo / purge gap of one sequence window (g = 1) was enforced at the train/validation and validation/test boundaries per facility along each facility's active operational timeline. For each facility i generating N_i sliding windows, training spans indices [0, floor(0.70 N_i)), followed by an embargo gap omitting window floor(0.70 N_i); validation spans [floor(0.70 N_i) + 1, floor(0.85 N_i)), followed by a second embargo gap omitting window floor(0.85 N_i); and testing spans [floor(0.85 N_i) + 1, N_i). This purge gap ensures that the latest forecast target of any partition (y_60 at offset +7) never equals or overlaps with the earliest target of the subsequent partition (y_30 at offset +7 of the subsequent window). Across all 30 clients, this produces exactly 15,299 training windows (70.15%), 3,246 validation windows (14.88%), and 3,263 unified test windows (14.96%), with exactly 60 boundary transition windows purged across the 21,868 total sliding sequences. The resulting test set exhibits a sample-weighted mean capacity of 1,396.8 bays."
     )
 
     add_p(
-        "Each input observation vector x_t in R^5 concatenates the continuous availability ratio a_t with cyclical diurnal time embeddings:"
+        "Each input observation vector x_t in R^4 concatenates the continuous availability ratio a_t with cyclical diurnal hour embeddings and normalized day of the week:"
     )
-    add_eq("x_t = [ a_t,  \\sin(2\\pi h_t / 24),  \\cos(2\\pi h_t / 24),  \\sin(2\\pi d_t / 7),  \\cos(2\\pi d_t / 7) ]^T", 1)
-    add_p("where h_t in [8.0, 16.5] is the daytime hour and d_t in {0, ..., 6} represents the day of the week.")
+    add_eq("x_t = \\left[ a_t, \\; \\sin\\left(\\frac{2\\pi h_t}{24}\\right), \\; \\cos\\left(\\frac{2\\pi h_t}{24}\\right), \\; \\frac{d_t}{7} \\right]^T", 1)
+    add_p("where a_t in [0, 1] is the continuous availability ratio, h_t in [8.0, 16.5] is the daytime hour, and d_t in {0, ..., 6} represents the day of the week (normalized by 7.0).")
 
     add_h2("3.2.1 Data Leakage Audit and Empirical Sensitivity Analysis")
     add_p(
@@ -543,13 +533,13 @@ def build_manuscript():
     p_l1.paragraph_format.space_before = Pt(2)
     p_l1.paragraph_format.space_after = Pt(2)
     p_l1.add_run("1. Intra-Session Day Bounding: ").bold = True
-    p_l1.add_run("Linear time interpolation for missing readings is executed strictly within each single calendar day between 08:00 and 16:30. Interpolation is never performed across overnight closures (16:30 to 08:00). Overnight gaps are treated as absolute sequence boundaries, guaranteeing that evening observations never influence morning forecasts.")
+    p_l1.add_run("Linear time interpolation for missing daytime readings is executed strictly within each single calendar day between 08:00 and 16:30 using valid sensor readings on both sides of a gap. Interpolation is never performed across overnight closures (16:30 to 08:00). Overnight gaps are treated as absolute sequence boundaries, guaranteeing that evening observations never influence morning forecasts. We recognize that while bilateral interpolation within operating days regularizes irregular polling into uniform 30-minute intervals, it utilizes subsequent within-day readings when filling an intra-day gap.")
 
     p_l2 = doc.add_paragraph(style='List Paragraph')
     p_l2.paragraph_format.space_before = Pt(2)
     p_l2.paragraph_format.space_after = Pt(2)
-    p_l2.add_run("2. Strict Chronological Timeline Splitting: ").bold = True
-    p_l2.add_run("The 70% train, 15% validation, and 15% test partition is applied strictly chronologically along each facility's active operational timeline. The training partition contains solely the earliest 70% of days, followed by the next 15% for validation, and the final 15% for testing. Because interpolation occurs within individual days before chronological windowing, no test-period observation can ever influence train or validation interpolations.")
+    p_l2.add_run("2. Chronological Timeline Partitioning with Embargo Purge Gaps: ").bold = True
+    p_l2.add_run("Sequence window partitioning is executed strictly chronologically along each facility's active operational timeline, separated by a 1-window embargo gap at partition boundaries. Training sequences strictly precede validation sequences, which strictly precede test sequences. Because boundary transition windows are purged, forecast targets never overlap across partitions, and no test-period observation can influence train or validation parameters.")
 
     p_l3 = doc.add_paragraph(style='List Paragraph')
     p_l3.paragraph_format.space_before = Pt(2)
@@ -558,14 +548,14 @@ def build_manuscript():
     p_l3.add_run("Within each sliding sequence window (x_{t-5}, ..., x_t), input features reflect strictly past observations up to current time t, while forecast targets y_{t+1} (30-min ahead) and y_{t+2} (60-min ahead) reside strictly in future time steps.")
 
     add_p(
-        "To empirically evaluate whether daytime interpolation distorts forecasting accuracy or biases model rankings, we audited all 3,293 "
-        "test sequence windows across the 30 facilities. This forensic audit revealed that 2,811 test windows (85.4%) are completely uninterpolated—every "
-        "single one of the 8 constituent time steps corresponds to an authentic, un-imputed physical sensor transmission. Only 482 windows (14.6%) "
+        "To empirically evaluate whether daytime interpolation distorts forecasting accuracy or biases model rankings, we audited all 3,263 "
+        "purged test sequence windows across the 30 facilities. This forensic audit revealed that 2,781 test windows (85.2%) are completely uninterpolated—every "
+        "single one of the 8 constituent time steps corresponds to an authentic, un-imputed physical sensor transmission. Only 482 windows (14.8%) "
         "contain one or more interpolated daytime slots. We conducted a rigorous sensitivity analysis evaluating model accuracy on the pure uninterpolated "
-        "test subset versus the complete test set. Centralized Attention-LSTM achieved an MAE of 0.02196 (rounded to 0.0220) on the pure raw subset versus "
-        "0.02171 (rounded to 0.0217) on the full test set—an unrounded difference of +0.00025, or ~0.3 bays. Global FedAvg achieved an MAE of 0.10228 (0.1023) "
-        "on the pure raw subset versus 0.10075 (0.1007) on the full test set (+0.00153 difference), while Personalized FedAvg achieved 0.06366 (0.0637) versus "
-        "0.06066 (0.0607), a difference of +0.00300. Similarly, Local Linear AR(4) achieved 0.0128 versus 0.0126. Crucially, model rankings, relative margins, "
+        "test subset versus the complete 3,263-window test set. Centralized Attention-LSTM achieved an MAE of 0.02196 (rounded to 0.0220) on the pure raw subset versus "
+        "0.02170 (rounded to 0.0217) on the full test set—an unrounded difference of +0.00026, or ~0.3 bays. Global FedAvg achieved an MAE of 0.1022 (0.102) "
+        "on the pure raw subset versus 0.1006 (0.101) on the full test set (+0.0016 difference), while Personalized FedAvg achieved 0.0636 versus "
+        "0.0607, a difference of +0.0029. Similarly, Local Linear AR(4) achieved 0.0128 versus 0.0126. Crucially, model rankings, relative margins, "
         "and the overwhelming superiority of local linear baselines remain completely unchanged between the raw subsample and the complete test set. We therefore "
         "conclude that while linear time-interpolation within operating hours is an operational heuristic for missing daytime readings, the reported benchmark "
         "results, algorithmic rankings, and baseline hierarchies are robust and not artifacts of daytime interpolation."
@@ -579,15 +569,18 @@ def build_manuscript():
     )
 
     add_p(
-        "To allow the model to selectively focus on critical past time steps (such as peak in-rush intervals), we integrate a temporal attention "
-        "mechanism over the recurrent sequence based on Bahdanau et al. [5]. The attention alignment score e_t and normalized weight alpha_t "
-        "for historical step t are computed with respect to the terminal hidden state h_L:"
+        "To allow the network to selectively emphasize critical rapid-transition intervals (such as morning ingress spikes and evening departures), "
+        "we integrate a temporal self-attention mechanism over the sequence of hidden representations. Alignment scores e_t in R "
+        "for each historical time step t are computed via a two-layer feedforward projection with hyperbolic tangent activation:"
     )
-    add_eq("e_t = v_a^T \\tanh(W_a h_t + U_a h_L + b_a)", 2)
-    add_eq("\\alpha_t = \\frac{\\exp(e_t)}{\\sum_{j=1}^L \\exp(e_j)}", 3)
+    add_eq("e_t = w_a^T \\tanh(W_a h_t + b_a) + b_s", 2)
     add_p(
-        "where W_a, U_a in R^{32 x 64}, v_a in R^{32}, and b_a in R^{32} are learnable parameters. The temporal context vector c in R^{64} is the "
-        "weighted sum of historical representations:"
+        "where W_a in R^{32 x 64}, b_a in R^{32}, w_a in R^{32}, and b_s in R (totaling 2,113 parameters). The scalar alignment scores e_t are normalized "
+        "across all lookback time steps using a softmax operator to yield attention weights \\alpha_t:"
+    )
+    add_eq("\\alpha_t = \\frac{\\exp(e_t)}{\\sum_{\\tau=1}^L \\exp(e_\\tau)}, \\quad \\sum_{t=1}^L \\alpha_t = 1", 3)
+    add_p(
+        "The dynamic temporal context vector c in R^{64} is computed as the attention-weighted linear sum of all historical hidden states:"
     )
     add_eq("c = \\sum_{t=1}^L \\alpha_t h_t", 4)
     add_p(
@@ -690,7 +683,7 @@ def build_manuscript():
 
     add_h2("4.1 Comprehensive Multi-Horizon Benchmark")
     add_p(
-        "All eight forecasting paradigms were evaluated on the 3,293 unified test sequences across all 30 parking facilities. Evaluation metrics "
+        "All eight forecasting paradigms were evaluated on the 3,263 unified test sequences across all 30 parking facilities. Evaluation metrics "
         "include Pooled Mean Absolute Error (Micro MAE), Pooled Root Mean Squared Error (Micro RMSE), Macro Mean MAE (unweighted average across "
         "lots), Between-Lot Standard Deviation (sigma), and Mean Physical Space Error (in bays). Physical space error is computed by scaling "
         "prediction residuals against each facility's true nominal capacity C_i: e_{space} = |y_t - \\hat{y}_t| x C_i. Table 2 presents the "
@@ -698,7 +691,7 @@ def build_manuscript():
     )
 
     # Table 2: Primary Benchmark Table
-    add_caption("Table 2. Comprehensive Multi-Horizon Smart Parking Benchmark across 30 Heterogeneous Facilities (3,293 Unified Test Windows; Evaluated under Primary Benchmark Protocol, Seed = 42, B = 32).")
+    add_caption("Table 2. Comprehensive Multi-Horizon Smart Parking Benchmark across 30 Heterogeneous Facilities (3,263 Unified Test Windows with Embargo Purge Gaps; Evaluated under Primary Benchmark Protocol, Seed = 42, B = 32).")
     t2 = doc.add_table(rows=17, cols=7)
     t2.alignment = WD_TABLE_ALIGNMENT.CENTER
     set_table_borders(t2)
@@ -716,25 +709,25 @@ def build_manuscript():
         r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
 
     t2_data_30 = [
-        ("Persistence Baseline (y_hat = a_t)", "0.0257", "0.0387", "0.0251", "0.0133", "35.2"),
-        ("Local-Only Linear AR(4) (Private)", "0.0126", "0.0179", "0.0126", "0.0050", "14.5"),
-        ("Pooled Linear AR(4) (Centralized)", "0.0129", "0.0189", "0.0130", "0.0049", "15.1"),
-        ("Centralized XGBoost [4]", "0.0145", "0.0202", "0.0154", "0.0063", "17.6"),
+        ("Persistence Baseline (y_hat = a_t)", "0.0256", "0.0386", "0.0249", "0.0134", "33.4"),
+        ("Local-Only Linear AR(4) (Private)", "0.0126", "0.0179", "0.0125", "0.0049", "13.9"),
+        ("Pooled Linear AR(4) (Centralized)", "0.0129", "0.0189", "0.0130", "0.0049", "14.7"),
+        ("Centralized XGBoost [4]", "0.0145", "0.0201", "0.0152", "0.0057", "17.5"),
         ("Centralized Standard LSTM [24]", "0.0218", "0.0300", "0.0232", "0.0129", "25.2"),
-        ("Centralized Attention-LSTM [5]", "0.0217", "0.0285", "0.0231", "0.0108", "27.0"),
-        ("Global FedAvg (R=8, B=32) [7]", "0.1007", "0.1313", "0.1029", "0.0531", "127.1"),
-        ("Personalized FedAvg (Ours)", "0.0607", "0.0818", "0.0627", "0.0276", "73.1"),
+        ("Centralized Attention-LSTM [5]", "0.0217", "0.0285", "0.0230", "0.0109", "26.9"),
+        ("Global FedAvg (R=8, B=32) [7]", "0.1006", "0.1309", "0.1030", "0.0534", "126.8"),
+        ("Personalized FedAvg (Ours)", "0.0607", "0.0818", "0.0627", "0.0279", "73.2"),
     ]
 
     t2_data_60 = [
-        ("Persistence Baseline (y_hat = a_t)", "0.0494", "0.0716", "0.0481", "0.0248", "67.8"),
-        ("Local-Only Linear AR(4) (Private)", "0.0248", "0.0350", "0.0247", "0.0094", "29.7"),
-        ("Pooled Linear AR(4) (Centralized)", "0.0258", "0.0374", "0.0265", "0.0095", "31.2"),
-        ("Centralized XGBoost [4]", "0.0245", "0.0343", "0.0262", "0.0106", "30.0"),
-        ("Centralized Standard LSTM [24]", "0.0291", "0.0402", "0.0308", "0.0124", "35.6"),
-        ("Centralized Attention-LSTM [5]", "0.0304", "0.0415", "0.0318", "0.0122", "37.2"),
-        ("Global FedAvg (R=8, B=32) [7]", "0.1079", "0.1418", "0.1105", "0.0549", "137.5"),
-        ("Personalized FedAvg (Ours)", "0.0717", "0.0943", "0.0747", "0.0277", "90.0"),
+        ("Persistence Baseline (y_hat = a_t)", "0.0492", "0.0715", "0.0477", "0.0250", "64.2"),
+        ("Local-Only Linear AR(4) (Private)", "0.0248", "0.0350", "0.0243", "0.0094", "28.4"),
+        ("Pooled Linear AR(4) (Centralized)", "0.0259", "0.0375", "0.0266", "0.0095", "30.4"),
+        ("Centralized XGBoost [4]", "0.0245", "0.0343", "0.0264", "0.0112", "30.1"),
+        ("Centralized Standard LSTM [24]", "0.0291", "0.0402", "0.0305", "0.0117", "35.5"),
+        ("Centralized Attention-LSTM [5]", "0.0304", "0.0415", "0.0316", "0.0118", "37.2"),
+        ("Global FedAvg (R=8, B=32) [7]", "0.1078", "0.1416", "0.1106", "0.0552", "137.1"),
+        ("Personalized FedAvg (Ours)", "0.0732", "0.0962", "0.0750", "0.0263", "92.3"),
     ]
 
     row_idx = 1
@@ -939,7 +932,7 @@ def build_manuscript():
     add_p(
         "Consequently, if a parking operator possesses private edge compute and is not required to coordinate with outside operators, the optimal "
         "engineering decision is to deploy a local linear autoregressive model. It achieves superior accuracy (14.5 bays mean error), incurs "
-        "zero communication overhead, requires no GPU hardware, and guarantees absolute data confidentiality."
+        "zero communication overhead, requires no GPU hardware, and maintains complete local data containment without cross-facility communication."
     )
 
     add_h2("5.2 Under-Training vs. Non-IID Drift: Quantitative Decomposition")
@@ -1006,7 +999,7 @@ def build_manuscript():
     t5_rows = [
         ("Parameter Count", "57,474 weights (224.51 KiB / 229.90 KB)", "57,474 weights (224.51 KiB / 229.90 KB)", "4 scalar weights (16 bytes) per lot"),
         ("Total Network Data Moved", "1.48 MB / 1.41 MiB (raw CSV stream)", "110.35 MB / 105.24 MiB (480 transfers)", "0.00 B (strictly zero communication)"),
-        ("Total Local Gradient Steps", "14,340 Adam steps (pooled)", "~256 Adam steps per client", "1 closed-form Ridge solve per lot"),
+        ("Total Local Gradient Steps", "14,370 Adam steps (pooled)", "~256 Adam steps per client", "1 closed-form Ridge solve per lot"),
         ("Privacy & Sovereignty", "Zero (all data pooled in cloud)", "High (data stays on edge nodes)", "Absolute (100% private, no federation)")
     ]
 
@@ -1052,7 +1045,7 @@ def build_manuscript():
         "14.5 bays), outperforming both centralized deep neural networks (0.0217; 27.0 bays) and federated models while requiring zero communication "
         "and preserving absolute data privacy. Under practical communication constraints (8 rounds, 2 local epochs), global FedAvg under-trains severely, "
         "achieving a 30-minute MAE of 0.0935 ± 0.0032 (118.5 macro bays in multi-seed evaluation, and 0.1007 / 127.1 bays in the primary single-seed benchmark). "
-        "This degradation is primarily driven by compute starvation (~256 local Adam updates per client versus ~14,340 centralized steps) rather than non-IID collapse: "
+        "This degradation is primarily driven by compute starvation (~256 local Adam updates per client versus 14,370 centralized steps) rather than non-IID collapse: "
         "an IID-shuffled federated control demonstrates that compute deficits account for 64.2% of the gap, while client heterogeneity contributes 35.8%. "
         "Post-aggregation personalization fine-tuning mitigates this gap, reducing error to 0.0592 ± 0.0004 (82.4 macro bays; a 36.7% relative reduction over FedAvg, "
         "recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark), while compressing between-lot variance "
