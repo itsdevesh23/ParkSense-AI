@@ -1,0 +1,7 @@
+Model,"Pooled MAE (Micro, Ratio)",Pooled RMSE (Ratio),Macro Mean MAE (Ratio),Between-Lot Std (sigma),Mean Space Error (bays)
+"ARIMA(2, 1, 1)",0.0424,0.0613,0.0416,0.0186,53.5
+XGBoost,0.0245,0.0343,0.0262,0.0106,30.0
+Centralized Standard LSTM,0.0291,0.0402,0.0308,0.0124,35.6
+Centralized Attention-LSTM,0.0304,0.0415,0.0318,0.0122,37.2
+Global FedAvg (R=8),0.1079,0.1418,0.1105,0.0549,137.5
+Personalized FedAvg (Ours),0.0717,0.0943,0.0747,0.0277,90.0

@@ -1,0 +1,68 @@
+[
+  {
+    "Model Tier": "Tier 1: Statistical",
+    "Model": "ARIMA(2, 1, 1)",
+    "Architecture / Paradigm": "Linear Autoregressive Baseline",
+    "30m MAE": 0.0231,
+    "30m RMSE": 0.0315,
+    "30m MAPE (%)": 21.08,
+    "60m MAE": 0.0467,
+    "60m RMSE": 0.0629,
+    "60m MAPE (%)": 40.61
+  },
+  {
+    "Model Tier": "Tier 2: Machine Learning",
+    "Model": "XGBoost Regressor",
+    "Architecture / Paradigm": "Gradient Boosted Trees (Centralized)",
+    "30m MAE": 0.0145,
+    "30m RMSE": 0.0202,
+    "30m MAPE (%)": 14.95,
+    "60m MAE": 0.0245,
+    "60m RMSE": 0.0343,
+    "60m MAPE (%)": 27.98
+  },
+  {
+    "Model Tier": "Tier 3: Deep Sequence",
+    "Model": "Centralized Standard LSTM",
+    "Architecture / Paradigm": "2-Layer Recurrent Neural Net (Centralized)",
+    "30m MAE": 0.0218,
+    "30m RMSE": 0.03,
+    "30m MAPE (%)": 39.05,
+    "60m MAE": 0.0291,
+    "60m RMSE": 0.0402,
+    "60m MAPE (%)": 40.67
+  },
+  {
+    "Model Tier": "Tier 3: Deep Sequence",
+    "Model": "Centralized Attention-LSTM",
+    "Architecture / Paradigm": "Temporal Attention + LSTM (Centralized)",
+    "30m MAE": 0.0217,
+    "30m RMSE": 0.0285,
+    "30m MAPE (%)": 34.09,
+    "60m MAE": 0.0304,
+    "60m RMSE": 0.0415,
+    "60m MAPE (%)": 45.61
+  },
+  {
+    "Model Tier": "Tier 4: Federated Learning",
+    "Model": "Federated Attention-LSTM",
+    "Architecture / Paradigm": "FedAvg Distributed Aggregation (Decentralized)",
+    "30m MAE": 0.1029,
+    "30m RMSE": 0.12,
+    "30m MAPE (%)": 180.22,
+    "60m MAE": 0.1105,
+    "60m RMSE": 0.1304,
+    "60m MAPE (%)": 194.94
+  },
+  {
+    "Model Tier": "Tier 4: Federated Learning",
+    "Model": "Personalized Federated Attention-LSTM",
+    "Architecture / Paradigm": "FedAvg + Local Fine-Tuning (Client-Personalized)",
+    "30m MAE": 0.0629,
+    "30m RMSE": 0.0778,
+    "30m MAPE (%)": 91.2,
+    "60m MAE": 0.0709,
+    "60m RMSE": 0.0888,
+    "60m MAPE (%)": 99.82
+  }
+]

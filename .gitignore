@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Caches & test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Node modules & build outputs
+node_modules/
+**/node_modules/
+frontend/dist/
+dist/
+build/
+.npm/
+
+# Temporary / backups / scratch
+*.bak
+*.tmp
+*.log
+scratch/
+apply_final_edits.py
+apply_review3_fixes.py
+test_tbl.docx
+template_dump.txt
+corrections_dump.txt
+read_corrections.py
+test_local_fl.py
+update_*.py
+41746af9-90c1-4a81-8a93-5cd1a4b523b9.docx
+Team-9-DSC-first level corrections.docx
+
+# OS specific
+Thumbs.db
+Desktop.ini
+.DS_Store
