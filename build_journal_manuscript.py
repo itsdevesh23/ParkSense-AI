@@ -227,8 +227,9 @@ def build_manuscript():
         "both centralized deep recurrent models (Attention-LSTM MAE: 0.0217; 27.0 bays) and federated neural architectures. Under standard "
         "communication constraints (8 rounds, 2 local epochs), global Federated Averaging (FedAvg) exhibits severe under-training (MAE: 0.0935 ± 0.0032; "
         "118.5 macro bays). Through an IID-shuffled federated control experiment (MAE: 0.0678 ± 0.0019), we demonstrate that compute starvation "
-        "under communication round limits (~256 local Adam steps per client versus 14,370 for centralized models) accounts for 64.2% of "
-        "this performance gap, while non-IID statistical heterogeneity accounts for 35.8%. While proximal regularization (FedProx, MAE: 0.1305) "
+        "provides an empirical decomposition under our experimental protocol: eliminating statistical heterogeneity accounts for 35.8% of the gap, "
+        "while the remaining 64.2% residual deficit is strongly consistent with optimization under-training under communication round constraints "
+        "(~256 local Adam steps per client versus 14,370 for centralized models), though definitive causal proof would require exhaustive compute-parity experiments. While proximal regularization (FedProx, MAE: 0.1305) "
         "slows convergence and split-head architectures (FedPer, MAE: 0.0775) provide partial gains, localized post-aggregation fine-tuning "
         "(Personalized FedAvg) achieves the strongest federated performance with an MAE of 0.0592 ± 0.0004 (82.4 macro bays), representing "
         "a 36.7% relative error reduction over global FedAvg, recovering 47.8% of the centralized performance gap, and compressing cross-facility "
@@ -525,40 +526,41 @@ def build_manuscript():
 
     add_h2("3.2.1 Data Leakage Audit and Empirical Sensitivity Analysis")
     add_p(
-        "A critical methodological concern in time series forecasting is the potential for predictive lookahead leakage. In our preprocessing "
-        "pipeline, three strict architectural safeguards prevent future information from contaminating model inputs or evaluation partitions:"
+        "A critical methodological consideration in IoT time series forecasting is evaluating the potential for predictive lookahead leakage. "
+        "In our preprocessing pipeline, we institute three structural boundaries to control and mitigate temporal information contamination:"
     )
 
     p_l1 = doc.add_paragraph(style='List Paragraph')
     p_l1.paragraph_format.space_before = Pt(2)
     p_l1.paragraph_format.space_after = Pt(2)
     p_l1.add_run("1. Intra-Session Day Bounding: ").bold = True
-    p_l1.add_run("Linear time interpolation for missing daytime readings is executed strictly within each single calendar day between 08:00 and 16:30 using valid sensor readings on both sides of a gap. Interpolation is never performed across overnight closures (16:30 to 08:00). Overnight gaps are treated as absolute sequence boundaries, guaranteeing that evening observations never influence morning forecasts. We recognize that while bilateral interpolation within operating days regularizes irregular polling into uniform 30-minute intervals, it utilizes subsequent within-day readings when filling an intra-day gap.")
+    p_l1.add_run("Linear time interpolation for missing daytime readings is executed strictly within each single calendar day between 08:00 and 16:30 using valid sensor readings on both sides of a gap. Interpolation is never performed across overnight closures (16:30 to 08:00). Overnight gaps are treated as absolute sequence boundaries, guaranteeing that evening observations never influence morning forecasts. However, an inherent limitation of bilateral interpolation is that it uses subsequent observations within the same calendar day to impute earlier missing slots; hence, within sparse daytime sessions, imputed features at step t theoretically incorporate within-day future readings that would not have been available in real-time streaming operations.")
 
     p_l2 = doc.add_paragraph(style='List Paragraph')
     p_l2.paragraph_format.space_before = Pt(2)
     p_l2.paragraph_format.space_after = Pt(2)
     p_l2.add_run("2. Chronological Timeline Partitioning with Embargo Purge Gaps: ").bold = True
-    p_l2.add_run("Sequence window partitioning is executed strictly chronologically along each facility's active operational timeline, separated by a 1-window embargo gap at partition boundaries. Training sequences strictly precede validation sequences, which strictly precede test sequences. Because boundary transition windows are purged, forecast targets never overlap across partitions, and no test-period observation can influence train or validation parameters.")
+    p_l2.add_run("To strictly isolate evaluation partitions, the 70% train, 15% validation, and 15% test split is executed chronologically along each facility's active operational timeline at the sequence-window level, separated by an embargo/purge gap (g = 1 sequence window) at each boundary. This ensures that the forecast targets of training windows (up to y_60 at t+7) never overlap with validation targets, and validation targets never overlap with test targets. Because training sequences strictly precede validation sequences, which strictly precede test sequences, no test-period data can influence model training or hyperparameter selection.")
 
     p_l3 = doc.add_paragraph(style='List Paragraph')
     p_l3.paragraph_format.space_before = Pt(2)
     p_l3.paragraph_format.space_after = Pt(2)
     p_l3.add_run("3. Causal Sequence Directionality: ").bold = True
-    p_l3.add_run("Within each sliding sequence window (x_{t-5}, ..., x_t), input features reflect strictly past observations up to current time t, while forecast targets y_{t+1} (30-min ahead) and y_{t+2} (60-min ahead) reside strictly in future time steps.")
+    p_l3.add_run("Within each sliding sequence window (x_{t-5}, ..., x_t), input features reflect strictly past observations up to current time t, while forecast targets y_{t+1} (30-min ahead) and y_{t+2} (60-min ahead) reside strictly at future time steps.")
 
     add_p(
-        "To empirically evaluate whether daytime interpolation distorts forecasting accuracy or biases model rankings, we audited all 3,263 "
+        "To evaluate the practical empirical impact of intra-day interpolation on model performance, we audited all 3,263 "
         "purged test sequence windows across the 30 facilities. This forensic audit revealed that 2,781 test windows (85.2%) are completely uninterpolated—every "
         "single one of the 8 constituent time steps corresponds to an authentic, un-imputed physical sensor transmission. Only 482 windows (14.8%) "
-        "contain one or more interpolated daytime slots. We conducted a rigorous sensitivity analysis evaluating model accuracy on the pure uninterpolated "
+        "contain one or more interpolated daytime slots. We conducted a sensitivity analysis evaluating model accuracy on the pure uninterpolated "
         "test subset versus the complete 3,263-window test set. Centralized Attention-LSTM achieved an MAE of 0.02196 (rounded to 0.0220) on the pure raw subset versus "
         "0.02170 (rounded to 0.0217) on the full test set—an unrounded difference of +0.00026, or ~0.3 bays. Global FedAvg achieved an MAE of 0.1022 (0.102) "
         "on the pure raw subset versus 0.1006 (0.101) on the full test set (+0.0016 difference), while Personalized FedAvg achieved 0.0636 versus "
         "0.0607, a difference of +0.0029. Similarly, Local Linear AR(4) achieved 0.0128 versus 0.0126. Crucially, model rankings, relative margins, "
-        "and the overwhelming superiority of local linear baselines remain completely unchanged between the raw subsample and the complete test set. We therefore "
-        "conclude that while linear time-interpolation within operating hours is an operational heuristic for missing daytime readings, the reported benchmark "
-        "results, algorithmic rankings, and baseline hierarchies are robust and not artifacts of daytime interpolation."
+        "and the overwhelming superiority of local linear baselines remain completely unchanged between the raw subsample and the complete test set. We emphasize "
+        "that this empirical sensitivity analysis does not prove the complete absence of lookahead bias across imputed time steps. Rather, it provides strong empirical "
+        "evidence that our core benchmark findings—namely, the superiority of local linear models, the under-training of FedAvg, and the relative recovery achieved "
+        "via personalization—are robust, stable, and not artifacts of daytime linear interpolation."
     )
 
     add_h2("3.3 Model Architecture: A Lightweight Recurrent Backbone")
@@ -673,8 +675,10 @@ def build_manuscript():
     add_p(
         "Thus, each federated client executes barely 1.78% of the gradient updates performed by the centralized model. While the IID-shuffled control "
         "experiment demonstrates that non-IID statistical heterogeneity accounts for 35.8% of the initial gap between FedAvg and centralized models, "
-        "the remaining 64.2% residual deficit is strongly consistent with optimization under-training under communication round constraints. Because "
-        "FedAvg test error continues to improve gradually when communication rounds are extended from R = 8 to R = 16 (falling from 0.1007 to 0.0978), "
+        "the remaining 64.2% residual deficit is strongly consistent with optimization under-training under communication round constraints. "
+        "We emphasize that this 64.2% figure represents an experimental decomposition under our benchmarking assumptions rather than a definitive causal proof; "
+        "establishing conclusive causality would require extended round scaling up to strict gradient-step parity with centralized models. Because "
+        "FedAvg test error continues to improve gradually when communication rounds are extended from R = 8 to R = 16 (falling from 0.1006 to 0.0978), "
         "strict round limits impose substantial optimization friction on decentralized convergence."
     )
 
@@ -829,7 +833,7 @@ def build_manuscript():
     p_r1.paragraph_format.space_before = Pt(2)
     p_r1.paragraph_format.space_after = Pt(2)
     p_r1.add_run("1. Quantitative Separation of Heterogeneity vs. Under-Training: ").bold = True
-    p_r1.add_run("Under the IID-shuffled control, where statistical heterogeneity between clients is strictly eliminated, FedAvg achieves a pooled MAE of 0.0678 ± 0.0019. Comparing the non-IID FedAvg error (0.0935) and the centralized Attention-LSTM benchmark (0.0217), the total performance gap is 0.0718. Shuffling data IID reduces the gap by 0.0257 (35.8%), leaving a residual gap of 0.0461 (64.2%). This proves that compute starvation under communication round budgets is responsible for the majority of the performance gap, while non-IID drift contributes the remaining 35.8%.")
+    p_r1.add_run("Under the IID-shuffled control, where statistical heterogeneity between clients is strictly eliminated, FedAvg achieves a pooled MAE of 0.0678 ± 0.0019. Comparing the non-IID FedAvg error (0.0935) and the centralized Attention-LSTM benchmark (0.0217), the total performance gap is 0.0718. Shuffling data IID reduces the gap by 0.0257 (35.8%), leaving a residual gap of 0.0461 (64.2%). Under our experimental decomposition, this residual deficit is strongly consistent with optimization under-training under communication round constraints, while non-IID client drift accounts for the remaining 35.8%, though definitive causal attribution would require full compute-parity training across extended communication rounds.")
 
     p_r2 = doc.add_paragraph(style='List Paragraph')
     p_r2.paragraph_format.space_before = Pt(2)
@@ -946,8 +950,8 @@ def build_manuscript():
     add_p(
         "Instead, the primary culprit is compute starvation under communication constraints. Federated clients in an 8-round protocol execute "
         "barely ~200 local gradient steps, compared to over 14,000 steps executed by the centralized model. Our IID-shuffled control experiment "
-        "(Table 3) rigorously quantifies this division: compute starvation accounts for 64.2% of the performance deficit, while non-IID statistical "
-        "heterogeneity accounts for 35.8%. Local personalization acts as a high-leverage compensation mechanism: by fine-tuning the under-converged "
+        "(Table 3) provides an empirical decomposition of this division under our benchmarking protocol: statistical heterogeneity accounts for 35.8% of the performance deficit, "
+        "while the remaining 64.2% is an empirical residual deficit strongly consistent with compute constraints and optimization under-training. Local personalization acts as a high-leverage compensation mechanism: by fine-tuning the under-converged "
         "global recurrent features on lot-specific data, the model rapidly aligns its output scale to local capacity, recovering 50.6% of the centralized gap."
     )
 
@@ -1046,7 +1050,7 @@ def build_manuscript():
         "and preserving absolute data privacy. Under practical communication constraints (8 rounds, 2 local epochs), global FedAvg under-trains severely, "
         "achieving a 30-minute MAE of 0.0935 ± 0.0032 (118.5 macro bays in multi-seed evaluation, and 0.1007 / 127.1 bays in the primary single-seed benchmark). "
         "This degradation is primarily driven by compute starvation (~256 local Adam updates per client versus 14,370 centralized steps) rather than non-IID collapse: "
-        "an IID-shuffled federated control demonstrates that compute deficits account for 64.2% of the gap, while client heterogeneity contributes 35.8%. "
+        "an IID-shuffled federated control provides an empirical decomposition attributing 35.8% of the performance gap to statistical heterogeneity, with the remaining 64.2% residual deficit being strongly consistent with compute constraints (~256 local Adam updates per client versus 14,370 centralized steps) rather than non-IID collapse. "
         "Post-aggregation personalization fine-tuning mitigates this gap, reducing error to 0.0592 ± 0.0004 (82.4 macro bays; a 36.7% relative reduction over FedAvg, "
         "recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark), while compressing between-lot variance "
         "by 51.2%. Furthermore, network audits confirm that federating neural networks moves 110.35 MB (105.24 MiB) of weights across 8 rounds versus only 1.48 MB "

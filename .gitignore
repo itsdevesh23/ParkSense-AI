@@ -31,8 +31,11 @@ scratch/
 apply_final_edits.py
 apply_review3_fixes.py
 apply_comprehensive_review4_fixes.py
+apply_final_review5_fixes.py
+apply_matches.py
 eval_purged_all.py
 test_purged_eval.py
+verify_target_separation.py
 find_att*.py
 inspect_*.py
 test_tbl.docx
