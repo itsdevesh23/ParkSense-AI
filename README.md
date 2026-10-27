@@ -19,7 +19,7 @@ Using 35,717 sensor observations from 30 municipal parking facilities in Birming
 
 ### 🔑 Key Findings
 
-1. **Dominance of Local Linear Baselines:** A 4-parameter local-only linear AR model per facility achieves a 30-minute MAE of **0.0126** ($\sim 13.9$ bays), outperforming centralized Attention-LSTM (**0.0217**; $26.9$ bays) and standard FedAvg (**0.1006**; $126.8$ bays) while requiring **zero communication** and maintaining complete data containment without cross-facility telemetry pooling.
+1. **Dominance of Local Linear Baselines:** A 5-parameter local-only linear AR(4) model per facility (4 lag weights + intercept) achieves a 30-minute MAE of **0.0126** ($\sim 13.9$ bays), outperforming centralized Attention-LSTM (**0.0217**; $26.9$ bays) and standard FedAvg (**0.1006**; $126.8$ bays) while requiring **zero communication** and maintaining complete data containment without cross-facility telemetry pooling.
 2. **Compute Starvation vs. Non-IID Drift:** Under standard federated budgets ($R=8$ rounds, $E=2$ epochs), each client executes barely 256 gradient updates ($\sim 1.78\%$ of centralized compute, which executes 14,370 Adam gradient steps). An IID-shuffled control experiment proves that non-IID spatial drift accounts for 35.8% of the initial gap, while the remaining 64.2% residual deficit is strongly consistent with optimization under-training under strict round budgets.
 3. **Personalization Gap Recovery:** Post-aggregation local fine-tuning (**Personalized FedAvg**) cuts FedAvg error by **36.7%** (MAE: $0.0592 \pm 0.0004$), recovering **47.8%** of the performance gap toward centralized models in multi-seed evaluations (and **50.6%** in the primary single-seed benchmark, MAE: 0.0607).
 4. **Refuting the Bandwidth Myth:** Federated neural modeling transmits **110.35 MB** (105.24 MiB across 8 rounds) across 30 clients—**74.6× larger** than streaming raw telemetry (1.48 MB / 1.41 MiB). FL is justified by institutional data sovereignty and multi-stakeholder commercial confidentiality, not edge uplink bandwidth savings.
@@ -34,7 +34,7 @@ Using 35,717 sensor observations from 30 municipal parking facilities in Birming
 
 | Horizon | Forecasting Model | Pooled MAE (Micro) | Pooled RMSE | Macro MAE | Between-Lot Std ($\sigma$) | Space Error (Bays) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **30-Min Ahead (`y_30`)** | **Local Linear AR(4) (Private)** | **0.0126** | **0.0179** | **0.0125** | **0.0049** | **13.9** |
+| **30-Min Ahead (`y_30`)** | **Local Linear AR(4) (Local isolation)** | **0.0126** | **0.0179** | **0.0125** | **0.0049** | **13.9** |
 | | Pooled Linear AR(4) (Centralized) | 0.0129 | 0.0189 | 0.0130 | 0.0049 | 14.7 |
 | | Centralized XGBoost | 0.0145 | 0.0201 | 0.0152 | 0.0057 | 17.5 |
 | | Centralized Attention-LSTM | 0.0217 | 0.0285 | 0.0230 | 0.0109 | 26.9 |
@@ -43,7 +43,7 @@ Using 35,717 sensor observations from 30 municipal parking facilities in Birming
 | | **Personalized FedAvg (Ours)** | **0.0607** | **0.0818** | **0.0627** | **0.0279** | **73.2** |
 | | Global FedAvg ($R=8, B=32$) | 0.1006 | 0.1309 | 0.1030 | 0.0534 | 126.8 |
 | **60-Min Ahead (`y_60`)** | Centralized XGBoost | **0.0245** | **0.0343** | **0.0264** | **0.0112** | **30.1** |
-| | **Local Linear AR(4) (Private)** | 0.0248 | 0.0350 | 0.0243 | 0.0094 | 28.4 |
+| | **Local Linear AR(4) (Local isolation)** | 0.0248 | 0.0350 | 0.0243 | 0.0094 | 28.4 |
 | | Pooled Linear AR(4) (Centralized) | 0.0259 | 0.0375 | 0.0266 | 0.0095 | 30.4 |
 | | Centralized Standard LSTM | 0.0291 | 0.0402 | 0.0305 | 0.0117 | 35.5 |
 | | Centralized Attention-LSTM | 0.0304 | 0.0415 | 0.0316 | 0.0118 | 37.2 |
