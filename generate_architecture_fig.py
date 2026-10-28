@@ -62,7 +62,7 @@ for c in client_data:
     ax.add_patch(rect_model)
     ax.text(cx + 1.3, 1.72, "Temporal Attention-LSTM", fontsize=8, fontweight='bold', color='#065F46', ha='center')
     ax.text(cx + 1.3, 1.50, "2-Layer LSTM (h=64) + Temporal Attention", fontsize=7.2, color='#334155', ha='center')
-    ax.text(cx + 1.3, 1.33, r"Lookback $K=4$ steps (2.0 hours)", fontsize=7.2, color='#64748B', ha='center')
+    ax.text(cx + 1.3, 1.33, r"Lookback $L=6$ steps (3.0 hours)", fontsize=7.2, color='#64748B', ha='center')
     
     # Personalization fine-tuning box
     rect_pers = patches.FancyBboxPatch((cx + 0.2, 0.55), 2.6, 0.55, boxstyle="round,pad=0.08",

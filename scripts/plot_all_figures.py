@@ -31,8 +31,8 @@ models = [
     "Personalized\nFedAvg"
 ]
 
-mae_vals = [0.0257, 0.0126, 0.0129, 0.0145, 0.0217, 0.1007, 0.0607]
-space_vals = [35.2, 14.5, 15.1, 17.6, 27.0, 127.1, 73.1]
+mae_vals = [0.0256, 0.0126, 0.0129, 0.0145, 0.0217, 0.1006, 0.0607]
+space_vals = [33.4, 13.9, 14.7, 17.5, 26.9, 126.8, 73.2]
 x = np.arange(len(models))
 width = 0.55
 colors = ["#94A3B8", "#10B981", "#059669", "#2563EB", "#4F46E5", "#DC2626", "#F59E0B"]
@@ -85,7 +85,7 @@ box_data = [
     df_lots["Personalized MAE"].values
 ]
 labels = [
-    "Local-Only Linear\n(Fully Private)",
+    "Local-Only Linear\n(Local Isolation)",
     "Centralized\nAttention-LSTM",
     "Global FedAvg\n($R=8$)",
     "Personalized FedAvg\n(Local Adaptation)"
