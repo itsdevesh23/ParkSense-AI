@@ -19,47 +19,48 @@ os.makedirs("results", exist_ok=True)
 plt.style.use("seaborn-v0_8-whitegrid" if "seaborn-v0_8-whitegrid" in plt.style.available else "default")
 
 # ==================== FIG 1: RECONCILED MODEL BENCHMARK WITH BASELINES ====================
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.2), dpi=300)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5.2), dpi=300)
 
 models = [
     "Persistence\n($\\hat{y}=a_t$)",
     "Local Linear\nAR(4)",
     "Pooled Linear\nAR(4)",
     "Centralized\nXGBoost",
-    "Centralized\nAttn-LSTM",
+    "Standard\nLSTM",
+    "Attention\nLSTM",
     "Global FedAvg\n($R=8, E=2$)",
     "Personalized\nFedAvg"
 ]
 
-mae_vals = [0.0256, 0.0126, 0.0129, 0.0145, 0.0217, 0.1006, 0.0607]
-space_vals = [33.4, 13.9, 14.7, 17.5, 26.9, 126.8, 73.2]
+mae_vals = [0.0256, 0.0126, 0.0129, 0.0145, 0.0218, 0.0217, 0.1006, 0.0607]
+space_vals = [33.4, 13.9, 14.7, 17.5, 25.2, 26.9, 126.8, 73.2]
 x = np.arange(len(models))
-width = 0.55
-colors = ["#94A3B8", "#10B981", "#059669", "#2563EB", "#4F46E5", "#DC2626", "#F59E0B"]
+width = 0.52
+colors = ["#94A3B8", "#10B981", "#059669", "#2563EB", "#6366F1", "#4F46E5", "#DC2626", "#F59E0B"]
 
 # Subplot 1: Pooled MAE
 bars1 = ax1.bar(x, mae_vals, width, color=colors, edgecolor="#1E293B", linewidth=0.8)
 ax1.set_ylabel("Pooled MAE ($y_{30}$ Availability Ratio)", fontsize=10.5, fontweight="bold", labelpad=8)
 ax1.set_title("(a) 30-Minute Forecasting Error (Micro-Average, $y_{30}$)", fontsize=11, fontweight="bold", pad=10)
 ax1.set_xticks(x)
-ax1.set_xticklabels(models, fontsize=8.5, fontweight="bold")
+ax1.set_xticklabels(models, fontsize=8.2, fontweight="bold")
 ax1.set_ylim(0, 0.12)
 for bar in bars1:
     h = bar.get_height()
     ax1.annotate(f"{h:.4f}", xy=(bar.get_x() + bar.get_width() / 2, h), xytext=(0, 3),
-                 textcoords="offset points", ha="center", va="bottom", fontsize=8, fontweight="bold")
+                 textcoords="offset points", ha="center", va="bottom", fontsize=7.8, fontweight="bold")
 
 # Subplot 2: Physical Space Error
 bars2 = ax2.bar(x, space_vals, width, color=colors, edgecolor="#1E293B", linewidth=0.8)
 ax2.set_ylabel("Mean Space Error (Vacant Bays)", fontsize=10.5, fontweight="bold", labelpad=8)
 ax2.set_title("(b) Operational Accuracy in Physical Bays (30-Minute)", fontsize=11, fontweight="bold", pad=10)
 ax2.set_xticks(x)
-ax2.set_xticklabels(models, fontsize=8.5, fontweight="bold")
+ax2.set_xticklabels(models, fontsize=8.2, fontweight="bold")
 ax2.set_ylim(0, 150)
 for bar in bars2:
     h = bar.get_height()
     ax2.annotate(f"{h:.1f}", xy=(bar.get_x() + bar.get_width() / 2, h), xytext=(0, 3),
-                 textcoords="offset points", ha="center", va="bottom", fontsize=8, fontweight="bold")
+                 textcoords="offset points", ha="center", va="bottom", fontsize=7.8, fontweight="bold")
 
 plt.tight_layout()
 plt.savefig("results/fig1_model_comparison_grouped.png", dpi=300)
