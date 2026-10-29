@@ -681,7 +681,7 @@ def build_manuscript():
 
     add_p(
         "In the IID-shuffled control experiment, the 15,299 pooled sequences are randomly permuted and sliced into 29 partitions of 509 sequences and 1 partition of 538 sequences. "
-        "At batch size 32, the 29 uniform partitions yield ceil(509 / 32) = 16 batches per epoch, while the 30th partition yields ceil(538 / 32) = 17 batches per epoch, "
+        "At batch size 32, the 29 partitions of 509 sequences each yield ceil(509 / 32) = 16 batches per epoch, while the 30th partition yields ceil(538 / 32) = 17 batches per epoch, "
         "summing to 481 batches per epoch across the 30 clients. Across 8 rounds (16 local epochs), the IID control executes exactly 481 × 16 = 7,696 client updates "
         "(averaging 256.5 updates per client), representing 53.6% of centralized compute volume. "
         "For Personalized FedAvg, base 8-round federated training executes the standard 7,888 updates, followed by 3 local fine-tuning epochs on each client's private training set. "
@@ -834,15 +834,15 @@ def build_manuscript():
     t3_rows = [
         # Panel 1: R=8
         ("Communication-Constrained (R=8, E=2, ~7,888 steps)", "Global FedAvg (R=8, B=32) [7]", "0.0935 ± 0.0032", "0.1230 ± 0.0030", "0.0963 ± 0.0029", "0.0498 ± 0.0013", "118.5 ± 2.6"),
-        ("Communication-Constrained (R=8, E=2, ~7,888 steps)", "IID-Shuffled FedAvg Control", "0.0678 ± 0.0019", "0.0956 ± 0.0023", "0.0711 ± 0.0019", "0.0361 ± 0.0012", "90.4 ± 1.5"),
+        ("Communication-Constrained (R=8, E=2, 7,696 updates)", "IID-Shuffled FedAvg Control", "0.0678 ± 0.0019", "0.0956 ± 0.0023", "0.0711 ± 0.0019", "0.0361 ± 0.0012", "90.4 ± 1.5"),
         ("Communication-Constrained (R=8, E=2, ~7,888 steps)", "FedProx (mu = 0.01) [19]", "0.1305 ± 0.0162", "0.1607 ± 0.0157", "0.1333 ± 0.0169", "0.0573 ± 0.0040", "162.8 ± 18.5"),
         ("Communication-Constrained (R=8, E=2, ~7,888 steps)", "FedPer (Shared Base, Private Head) [21]", "0.0775 ± 0.0012", "0.1056 ± 0.0007", "0.0798 ± 0.0009", "0.0379 ± 0.0007", "99.8 ± 1.2"),
-        ("Communication-Constrained (R=8, E=2, ~7,888 steps)", "Personalized FedAvg (Local Adaptation)", "0.0592 ± 0.0004", "0.0786 ± 0.0001", "0.0612 ± 0.0001", "0.0243 ± 0.0014", "82.4 ± 0.4"),
+        ("Communication-Constrained (R=8, E=2, 9,367 updates (including fine-tuning))", "Personalized FedAvg (Local Adaptation)", "0.0592 ± 0.0004", "0.0786 ± 0.0001", "0.0612 ± 0.0001", "0.0243 ± 0.0014", "82.4 ± 0.4"),
         ("Decomposition (R=8 Budget)", "Heterogeneity Gap: 0.0257 (35.8%) | IID-to-Centralized Residual: 0.0461 (64.2%) | Total Gap: 0.0718", "", "", "", "", ""),
         # Panel 2: R=15 Compute Parity
         ("Matched Compute Budget (R=15, ~14,790 steps)", "Compute-Matched Global FedAvg (R=15, Non-IID)", "0.0858 ± 0.0015", "0.1139 ± 0.0011", "0.0889 ± 0.0016", "0.0465 ± 0.0007", "109.5 ± 1.8"),
         ("Matched Compute Budget (R=15, ~14,790 steps)", "Compute-Matched IID-Shuffled FedAvg (R=15)", "0.0384 ± 0.0010", "0.0541 ± 0.0018", "0.0405 ± 0.0010", "0.0198 ± 0.0008", "47.5 ± 1.0"),
-        ("Matched Compute Budget (R=15, ~14,790 steps)", "Compute-Matched Personalized FedAvg (R=15)", "0.0548 ± 0.0012", "0.0741 ± 0.0022", "0.0565 ± 0.0015", "0.0222 ± 0.0022", "67.5 ± 1.6"),
+        ("Matched Compute Budget (R=15, 16,269 updates (including fine-tuning))", "Compute-Matched Personalized FedAvg (R=15)", "0.0548 ± 0.0012", "0.0741 ± 0.0022", "0.0565 ± 0.0015", "0.0222 ± 0.0022", "67.5 ± 1.6"),
         ("Decomposition (R=15 Budget)", "Heterogeneity Gap: 0.0474 (73.9%) | Residual Optimization Gap: 0.0167 (26.1%) | Total Gap: 0.0641", "", "", "", "", "")
     ]
 
