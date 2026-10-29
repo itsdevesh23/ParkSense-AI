@@ -35,9 +35,9 @@ ax.text(6.0, 4.85, "Zero Raw Data Transmission • Aggregates Model Weights Only
 
 # Clients Box: 3 Representational Clients out of 30
 client_data = [
-    {"name": "Client 1 (Shopping Mall)", "x": 0.5, "cap": "Cap: 1022 bays", "samples": "1,190 samples"},
-    {"name": "Client k (Council Deck)", "x": 4.5, "cap": "Cap: 387 bays", "samples": "1,190 samples"},
-    {"name": "Client 30 (Rail Station)", "x": 8.5, "cap": "Cap: 1912 bays", "samples": "1,190 samples"}
+    {"name": "Client 1 (BHMEURBRD02)", "x": 0.5, "cap": "Cap: 220 bays (Min)", "samples": "~1,190 readings"},
+    {"name": "Client k (Bull Ring)", "x": 4.5, "cap": "Cap: 3,053 bays (Major)", "samples": "~1,190 readings"},
+    {"name": "Client 30 (Others-CCCPS133)", "x": 8.5, "cap": "Cap: 4,675 bays (Max)", "samples": "~1,190 readings"}
 ]
 
 for c in client_data:
@@ -87,7 +87,6 @@ ax.annotate("", xy=(10.0, 3.75), xytext=(7.7, 4.4),
             arrowprops=dict(arrowstyle="<->", color=c_server, lw=1.6, ls='--', shrinkA=3, shrinkB=3))
 ax.text(9.4, 4.2, "Weights Exchange\n(No Raw Data)", fontsize=7.5, color=c_server, fontweight='bold', ha='center')
 
-# Output Forecast Banner on Bottom Right
 plt.tight_layout()
 plt.savefig("results/fig_architecture.png", dpi=300, bbox_inches='tight')
 print("Architecture figure generated: results/fig_architecture.png")

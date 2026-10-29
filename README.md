@@ -40,7 +40,7 @@ Using 35,717 sensor observations from 30 municipal parking facilities in Birming
 | | Centralized Attention-LSTM | 0.0217 | 0.0285 | 0.0230 | 0.0109 | 26.9 |
 | | Centralized Standard LSTM | 0.0218 | 0.0300 | 0.0232 | 0.0129 | 25.2 |
 | | Persistence (Naive) | 0.0256 | 0.0386 | 0.0249 | 0.0134 | 33.4 |
-| | **Personalized FedAvg (Ours)** | **0.0607** | **0.0818** | **0.0627** | **0.0279** | **73.2** |
+| | **Personalized FedAvg (Local Adaptation)** | **0.0607** | **0.0818** | **0.0627** | **0.0279** | **73.2** |
 | | Global FedAvg ($R=8, B=32$) | 0.1006 | 0.1309 | 0.1030 | 0.0534 | 126.8 |
 | **60-Min Ahead (`y_60`)** | Centralized XGBoost | **0.0245** | **0.0343** | **0.0264** | **0.0112** | **30.1** |
 | | **Local Linear AR(4) (Local isolation)** | 0.0248 | 0.0350 | 0.0243 | 0.0094 | 28.4 |
@@ -48,7 +48,7 @@ Using 35,717 sensor observations from 30 municipal parking facilities in Birming
 | | Centralized Standard LSTM | 0.0291 | 0.0402 | 0.0305 | 0.0117 | 35.5 |
 | | Centralized Attention-LSTM | 0.0304 | 0.0415 | 0.0316 | 0.0118 | 37.2 |
 | | Persistence (Naive) | 0.0492 | 0.0715 | 0.0477 | 0.0250 | 64.2 |
-| | **Personalized FedAvg (Ours)** | **0.0732** | **0.0962** | **0.0750** | **0.0263** | **92.3** |
+| | **Personalized FedAvg (Local Adaptation)** | **0.0732** | **0.0962** | **0.0750** | **0.0263** | **92.3** |
 | | Global FedAvg ($R=8, B=32$) | 0.1078 | 0.1416 | 0.1106 | 0.0552 | 137.1 |
 
 ### Multi-Seed Federated Learning Evaluation (Seeds: 42, 101, 2024)
@@ -62,6 +62,16 @@ Using 35,717 sensor observations from 30 municipal parking facilities in Birming
 | FedProx ($\mu = 0.01$) | $0.1305 \pm 0.0162$ | $0.1607 \pm 0.0157$ | $0.1333 \pm 0.0169$ | $0.0573 \pm 0.0040$ |
 | FedPer (Shared Base, Private Head) | $0.0775 \pm 0.0012$ | $0.1056 \pm 0.0007$ | $0.0798 \pm 0.0009$ | $0.0379 \pm 0.0007$ |
 | **Personalized FedAvg (Fine-Tuning)** | **$0.0592 \pm 0.0004$** | **$0.0786 \pm 0.0001$** | **$0.0612 \pm 0.0001$** | **$0.0243 \pm 0.0014$** |
+
+### Compute-Parity Federated Benchmark ($R = 15$, ~14,790 Gradient Updates Matching Centralized 30 Epochs)
+
+*Exported directly from `results/compute_parity_experiments.csv` across 3 random seeds {42, 101, 2024}.*
+
+| Regime & Protocol | Federated Algorithm | Pooled MAE (Micro) | Pooled RMSE | Macro Mean MAE | Between-Lot Std ($\sigma$) | Mean Space Error (Bays) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Matched Compute Parity** ($R=15$) | Compute-Parity Global FedAvg ($R=15$) | $0.0858 \pm 0.0015$ | $0.1139 \pm 0.0011$ | $0.0889 \pm 0.0016$ | $0.0465 \pm 0.0007$ | $109.5 \pm 1.8$ |
+| | Compute-Parity IID-Shuffled FedAvg | $0.0384 \pm 0.0010$ | $0.0541 \pm 0.0018$ | $0.0405 \pm 0.0010$ | $0.0198 \pm 0.0008$ | $47.5 \pm 1.0$ |
+| | **Compute-Parity Personalized FedAvg** | **$0.0548 \pm 0.0012$** | **$0.0741 \pm 0.0022$** | **$0.0565 \pm 0.0015$** | **$0.0222 \pm 0.0022$** | **$67.5 \pm 1.6$** |
 
 ---
 
