@@ -223,7 +223,7 @@ def build_manuscript():
         "isolated 5-parameter local linear autoregressive model per lot—requiring zero communication—achieves "
         "an MAE of 0.0126 (13.9 bays), outperforming centralized deep learning (Attention-LSTM MAE: 0.0217; 26.9 bays) "
         "and all federated models. Under standard communication budgets (8 rounds), global FedAvg achieves an MAE "
-        "of 0.0935 ± 0.0032. An IID control leaves a large residual at eight rounds; at approximately 14,790 updates, "
+        "of 0.0935 ± 0.0032. An IID control leaves a large residual at eight rounds; under the approximately matched 15-round budget, "
         "IID FedAvg (MAE: 0.0384 ± 0.0010) outperforms non-IID FedAvg (0.0858 ± 0.0015), highlighting the regime-dependent "
         "roles of optimization budget and client heterogeneity. Local personalization reduces federated error to "
         "0.0592 ± 0.0004 (82.4 bays), yet transmitting model weights incurs a 74.6-fold communication overhead compared "
