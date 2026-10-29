@@ -20,7 +20,7 @@ Using 35,717 sensor observations from 30 municipal parking facilities in Birming
 ### 🔑 Key Findings
 
 1. **Dominance of Local Linear Baselines:** A 5-parameter local-only linear AR(4) model per facility (4 lag weights + intercept) achieves a 30-minute MAE of **0.0126** ($\sim 13.9$ bays), outperforming centralized Attention-LSTM (**0.0217**; $26.9$ bays) and standard FedAvg (**0.1006**; $126.8$ bays) while requiring **zero communication** and maintaining complete data containment without cross-facility telemetry pooling.
-2. **Compute Starvation vs. Non-IID Drift:** Under standard federated budgets ($R=8$ rounds, $E=2$ epochs), each client executes barely 256 gradient updates ($\sim 1.78\%$ of centralized compute, which executes 14,370 Adam gradient steps). An IID-shuffled control experiment indicates that non-IID spatial drift accounts for 35.8% of the initial gap under communication-constrained budgets (R=8), while the remaining 64.2% residual deficit reflects optimization under-training; under matched compute parity (R=15, ~14,790 gradient steps), non-IID heterogeneity accounts for 73.9% of the deficit as compute starvation is mitigated under strict round budgets.
+2. **Compute Budgets vs. Non-IID Drift:** Across 30 clients, standard federated training ($R=8$ rounds, $E=2$ epochs) executes 7,888 cumulative client-side optimizer updates—54.9% of the 14,370 Adam steps in centralized training. An IID-shuffled control experiment indicates that non-IID spatial drift accounts for 35.8% of the initial gap under communication-constrained budgets ($R=8$), while the remaining 64.2% residual deficit reflects optimization under-training. When scaled to an approximately matched optimizer-update budget ($R=15$ rounds, 14,790 cumulative updates, 102.9% of centralized compute), IID FedAvg converges to $0.0384 \pm 0.0010$, indicating that non-IID client heterogeneity accounts for 73.9% of the remaining deficit once compute starvation is mitigated.
 3. **Personalization Gap Recovery:** Post-aggregation local fine-tuning (**Personalized FedAvg**) cuts FedAvg error by **36.7%** (MAE: $0.0592 \pm 0.0004$), recovering **47.8%** of the performance gap toward centralized models in multi-seed evaluations (and **50.6%** in the primary single-seed benchmark, MAE: 0.0607).
 4. **Refuting the Bandwidth Myth:** Federated neural modeling transmits **110.35 MB** (105.24 MiB across 8 rounds) across 30 clients—**74.6× larger** than streaming raw telemetry (1.48 MB / 1.41 MiB). FL is justified by institutional data sovereignty and multi-stakeholder commercial confidentiality, not edge uplink bandwidth savings.
 
@@ -63,7 +63,7 @@ Using 35,717 sensor observations from 30 municipal parking facilities in Birming
 | FedPer (Shared Base, Private Head) | $0.0775 \pm 0.0012$ | $0.1056 \pm 0.0007$ | $0.0798 \pm 0.0009$ | $0.0379 \pm 0.0007$ |
 | **Personalized FedAvg (Fine-Tuning)** | **$0.0592 \pm 0.0004$** | **$0.0786 \pm 0.0001$** | **$0.0612 \pm 0.0001$** | **$0.0243 \pm 0.0014$** |
 
-### Compute-Parity Federated Benchmark ($R = 15$, ~14,790 Gradient Updates Matching Centralized 30 Epochs)
+### Approximately Matched Compute-Budget Federated Benchmark ($R = 15$, ~14,790 Updates, 102.9% of Centralized Steps)
 
 *Exported directly from `results/compute_parity_experiments.csv` across 3 random seeds {42, 101, 2024}.*
 

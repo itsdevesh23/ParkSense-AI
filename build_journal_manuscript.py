@@ -216,20 +216,20 @@ def build_manuscript():
     r_absh.font.color.rgb = RGBColor(0x1F, 0x38, 0x64)
 
     abstract_text = (
-        "Federated learning (FL) is widely advocated for privacy-preserving smart parking forecasting across multi-operator "
-        "facilities, yet decentralized performance claims often overlook simple local baselines. We conduct an empirical benchmark "
-        "on the Birmingham municipal IoT dataset (30 facilities, 21,868 temporal sequences) across 30- and 60-minute horizons. "
-        "A zero-parameter persistence baseline achieves a 30-minute Mean Absolute Error (MAE) of 0.0256 (33.4 bays), while an "
-        "isolated 5-parameter local linear autoregressive model per lot—requiring zero communication and zero data sharing—achieves "
-        "an MAE of 0.0126 (13.9 bays), outperforming centralized deep learning (Attention-LSTM MAE: 0.0217; 26.9 bays) and all "
-        "federated configurations. Under standard communication budgets (8 rounds), global FedAvg exhibits severe under-training "
-        "(MAE: 0.0935 ± 0.0032). An IID-shuffled control (MAE: 0.0678 ± 0.0019) and matched-compute experiments (~14,790 gradient "
-        "updates) reveal that optimization under-training accounts for the primary performance deficit rather than spatial "
-        "heterogeneity alone. Local personalization reduces federated error to 0.0592 ± 0.0004 (82.4 bays), yet transmitting model "
-        "weights incurs a 74.6-fold communication overhead compared to raw data transfers. Bilateral interpolation of daytime sensor "
-        "gaps introduces potential within-day lookahead bias. We conclude that federation cannot be justified on bandwidth grounds "
-        "and underperforms isolated local linear models, but offers institutional data containment when multi-stakeholder governance "
-        "precludes centralization."
+        "Federated learning (FL) is widely advocated for smart parking forecasting across multi-operator facilities, "
+        "yet decentralized claims often overlook simple local baselines. We conduct an empirical benchmark on the "
+        "Birmingham IoT stream (30 facilities, 21,868 sequences) across 30- and 60-minute horizons. "
+        "A persistence baseline achieves a 30-minute Mean Absolute Error (MAE) of 0.0256 (33.4 bays), while an "
+        "isolated 5-parameter local linear autoregressive model per lot—requiring zero communication—achieves "
+        "an MAE of 0.0126 (13.9 bays), outperforming centralized deep learning (Attention-LSTM MAE: 0.0217; 26.9 bays) "
+        "and all federated models. Under standard communication budgets (8 rounds), global FedAvg achieves an MAE "
+        "of 0.0935 ± 0.0032. An IID control leaves a large residual at eight rounds; at approximately 14,790 updates, "
+        "IID FedAvg (MAE: 0.0384 ± 0.0010) outperforms non-IID FedAvg (0.0858 ± 0.0015), highlighting the regime-dependent "
+        "roles of optimization budget and client heterogeneity. Local personalization reduces federated error to "
+        "0.0592 ± 0.0004 (82.4 bays), yet transmitting model weights incurs a 74.6-fold communication overhead compared "
+        "to raw data transfers. Bilateral interpolation of daytime sensor gaps introduces potential within-day lookahead "
+        "bias. We conclude that federation cannot be justified on bandwidth grounds and underperforms isolated local linear "
+        "models, but offers institutional data containment when multi-stakeholder governance precludes centralization."
     )
     add_p(abstract_text, space_after=8)
 
@@ -323,7 +323,7 @@ def build_manuscript():
     p_c3.paragraph_format.space_before = Pt(2)
     p_c3.paragraph_format.space_after = Pt(3)
     p_c3.add_run("3. Disentangling Under-Training from Non-IID Drift via Compute Parity: ").bold = True
-    p_c3.add_run("Through compute step audits, round scaling, and an IID-shuffled federated control (MAE: 0.0678 ± 0.0019), our experimental decomposition reveals that under practical communication constraints (8 rounds, ~256 updates/client), 35.8% of the initial gap is attributable to statistical heterogeneity, while the remaining 64.2% reflects optimization under-training. Crucially, matched compute-parity experiments (15 rounds, ~14,790 client updates matching centralized 30 epochs) confirm that IID-shuffled FedAvg converges to 0.0384 ± 0.0010 (47.5 bays), reducing the optimization gap by 63.8% and indicating that non-IID client heterogeneity accounts for 73.9% of the residual deficit under this matched-compute protocol once compute starvation is mitigated. Local personalization fine-tuning bridges this gap, achieving MAE 0.0592 ± 0.0004 at R=8 and 0.0548 ± 0.0012 at R=15, recovering over 50% of the centralized performance gap without sharing client telemetry.")
+    p_c3.add_run("Through compute step audits, round scaling, and an IID-shuffled federated control (MAE: 0.0678 ± 0.0019), our experimental decomposition reveals that under practical communication constraints (8 rounds, ~256 updates/client), 35.8% of the initial gap is attributable to statistical heterogeneity, while the remaining 64.2% reflects optimization under-training. Crucially, approximately matched compute-budget experiments (15 rounds, 14,790 cumulative client updates vs. 14,370 centralized steps, 102.9%) confirm that IID-shuffled FedAvg converges to 0.0384 ± 0.0010 (47.5 bays), reducing the optimization gap by 63.8% and indicating that non-IID client heterogeneity accounts for 73.9% of the residual deficit under this matched-compute protocol once compute starvation is mitigated. Local personalization fine-tuning bridges this gap, achieving MAE 0.0592 ± 0.0004 at R=8 and 0.0548 ± 0.0012 at R=15, recovering over 50% of the centralized performance gap without sharing client telemetry.")
 
     p_c4 = doc.add_paragraph(style='List Paragraph')
     p_c4.paragraph_format.space_before = Pt(2)
@@ -677,13 +677,19 @@ def build_manuscript():
     )
 
     add_p(
-        "Thus, each federated client executes barely 1.78% of the gradient updates performed by the centralized model. While the IID-shuffled control "
-        "experiment demonstrates that non-IID statistical heterogeneity accounts for 35.8% of the initial gap between FedAvg and centralized models, "
-        "the remaining 64.2% residual deficit is strongly consistent with optimization under-training under communication round constraints. "
-        "We emphasize that this 64.2% figure represents an experimental decomposition under our communication-constrained protocol (R = 8). As investigated in Section 4.2 and Section 5.2 through matched compute-parity experiments (R = 15), extending training to matched gradient-step parity shifts this balance, indicating that non-IID heterogeneity accounts for 73.9% of the deficit once compute starvation is mitigated. "
-        "Because "
-        "FedAvg test error continues to improve gradually when communication rounds are extended from R = 8 to R = 16 (falling from 0.1006 to 0.0978), "
-        "strict round limits impose substantial optimization friction on decentralized convergence."
+        "Comparing cumulative system-wide optimizer updates provides a useful empirical proxy for training compute volume. "
+        "Across all 30 clients, the 8-round federated protocol executes a total of 7,888 client-side optimizer updates "
+        "(approximately 256 updates per client), representing 54.9% of the 14,370 updates executed by the centralized model over 30 epochs. "
+        "In contrast, the 15-round protocol scales to 14,790 cumulative client-side updates across the federation (approximately 493 updates per client), "
+        "achieving an approximately matched optimizer-update budget (102.9% of centralized compute, a +2.9% difference). "
+        "We note that optimizer-update counts serve as a pragmatic compute proxy rather than proof of identical optimization dynamics, "
+        "as decentralized client drift, localized mini-batches, and periodic parameter averaging induce distinct loss landscape trajectories. "
+        "Under the 8-round communication budget, an IID-shuffled control experiment indicates that statistical heterogeneity accounts for "
+        "35.8% of the initial gap between FedAvg and centralized models, while the remaining 64.2% residual deficit is consistent with "
+        "optimization under-training. Extending rounds to the approximately matched 15-round budget shifts this balance, indicating that "
+        "non-IID heterogeneity accounts for 73.9% of the deficit once compute starvation is mitigated (Section 4.2 and Section 5.2). "
+        "Because FedAvg test error improves gradually when communication rounds are extended, strict round limits impose substantial "
+        "optimization friction on decentralized convergence."
     )
 
     # ==================== 4. EXPERIMENTAL RESULTS ====================
@@ -794,7 +800,7 @@ def build_manuscript():
     )
 
     # Table 3: Advanced Federated Comparisons across Constrained and Compute-Parity Regimes
-    add_caption("Table 3. Empirical Comparison of Decentralized & Federated Personalization Paradigms across Communication-Constrained (R=8) and Compute-Parity (R=15) Regimes (30-Minute Horizon, Mean ± Std across Seeds {42, 101, 2024}).")
+    add_caption("Table 3. Empirical Comparison of Decentralized & Federated Personalization Paradigms across Communication-Constrained (R=8) and Approximately Matched Compute-Budget (R=15) Regimes (30-Minute Horizon, Mean ± Std across Seeds {42, 101, 2024}).")
     t3 = doc.add_table(rows=11, cols=7)
     t3.alignment = WD_TABLE_ALIGNMENT.CENTER
     set_table_borders(t3)
@@ -824,10 +830,10 @@ def build_manuscript():
         ("Communication-Constrained (R=8, E=2, ~7,888 steps)", "Personalized FedAvg (Local Adaptation)", "0.0592 ± 0.0004", "0.0786 ± 0.0001", "0.0612 ± 0.0001", "0.0243 ± 0.0014", "82.4 ± 0.4"),
         ("Decomposition (R=8 Budget)", "Heterogeneity Gap: 0.0257 (35.8%) | Under-Training Deficit: 0.0461 (64.2%) | Total Gap: 0.0718", "", "", "", "", ""),
         # Panel 2: R=15 Compute Parity
-        ("Compute Parity (R=15, E=2, ~14,790 steps)", "Compute-Parity Global FedAvg (R=15, Non-IID)", "0.0858 ± 0.0015", "0.1139 ± 0.0011", "0.0889 ± 0.0016", "0.0465 ± 0.0007", "109.5 ± 1.8"),
-        ("Compute Parity (R=15, E=2, ~14,790 steps)", "Compute-Parity IID-Shuffled FedAvg (R=15)", "0.0384 ± 0.0010", "0.0541 ± 0.0018", "0.0405 ± 0.0010", "0.0198 ± 0.0008", "47.5 ± 1.0"),
-        ("Compute Parity (R=15, E=2, ~14,790 steps)", "Compute-Parity Personalized FedAvg (R=15)", "0.0548 ± 0.0012", "0.0741 ± 0.0022", "0.0565 ± 0.0015", "0.0222 ± 0.0022", "67.5 ± 1.6"),
-        ("Decomposition (R=15 Parity)", "Heterogeneity Gap: 0.0474 (73.9%) | Residual Optimization Gap: 0.0167 (26.1%) | Total Gap: 0.0641", "", "", "", "", "")
+        ("Matched Compute Budget (R=15, ~14,790 steps)", "Compute-Matched Global FedAvg (R=15, Non-IID)", "0.0858 ± 0.0015", "0.1139 ± 0.0011", "0.0889 ± 0.0016", "0.0465 ± 0.0007", "109.5 ± 1.8"),
+        ("Matched Compute Budget (R=15, ~14,790 steps)", "Compute-Matched IID-Shuffled FedAvg (R=15)", "0.0384 ± 0.0010", "0.0541 ± 0.0018", "0.0405 ± 0.0010", "0.0198 ± 0.0008", "47.5 ± 1.0"),
+        ("Matched Compute Budget (R=15, ~14,790 steps)", "Compute-Matched Personalized FedAvg (R=15)", "0.0548 ± 0.0012", "0.0741 ± 0.0022", "0.0565 ± 0.0015", "0.0222 ± 0.0022", "67.5 ± 1.6"),
+        ("Decomposition (R=15 Budget)", "Heterogeneity Gap: 0.0474 (73.9%) | Residual Optimization Gap: 0.0167 (26.1%) | Total Gap: 0.0641", "", "", "", "", "")
     ]
 
     for i, row in enumerate(t3_rows, start=1):
@@ -886,7 +892,7 @@ def build_manuscript():
         "IID-Shuffled FedAvg MAE = [0.0372, 0.0389, 0.0390]; "
         "Personalized FedAvg MAE = [0.0535, 0.0558, 0.0551]. "
         "Under communication constraints (R=8), under-training accounts for 64.2% of the deficit; "
-        "when scaled to matched compute parity (R=15), eliminating compute starvation allows IID FedAvg to converge to 0.0384 ± 0.0010, "
+        "when scaled to an approximately matched optimizer-update budget (R=15, ~14,790 client updates vs 14,370 centralized steps, 102.9%), mitigating compute starvation allows IID FedAvg to converge to 0.0384 ± 0.0010, "
         "indicating that non-IID client heterogeneity accounts for 73.9% of the remaining deficit under this experimental protocol."
     )
     r_t3_note.font.size = Pt(8)
@@ -902,8 +908,8 @@ def build_manuscript():
     p_r1 = doc.add_paragraph(style='List Paragraph')
     p_r1.paragraph_format.space_before = Pt(2)
     p_r1.paragraph_format.space_after = Pt(2)
-    p_r1.add_run("1. Empirical Decomposition across Communication-Constrained and Compute-Parity Protocols: ").bold = True
-    p_r1.add_run("Under communication constraints (R = 8 rounds, ~256 local steps/client), Global FedAvg achieves an MAE of 0.0935 ± 0.0032. Eliminating statistical heterogeneity via IID shuffling reduces error to 0.0678 ± 0.0019. Relative to the centralized Attention-LSTM benchmark (0.0217), statistical heterogeneity accounts for 35.8% (0.0257) of the gap, while 64.2% (0.0461) reflects optimization under-training. Crucially, when scaled to matched compute parity (R = 15 rounds, E = 2, totaling 14,790 client updates matching the 30 centralized epochs = 14,370 steps), IID-Shuffled FedAvg converges rapidly to 0.0384 ± 0.0010 (47.5 bays), cutting the optimization gap by 63.8% (from 0.0461 to 0.0167). In contrast, Non-IID FedAvg at R = 15 reaches only 0.0858 ± 0.0015 (109.5 bays). Under matched compute parity, removing statistical heterogeneity closes 0.0474 of the 0.0641 gap—indicating that non-IID client statistical heterogeneity accounts for 73.9% (0.0474) of the performance deficit under this matched-compute protocol, while the residual optimization deficit shrinks to 26.1% (0.0167).")
+    p_r1.add_run("1. Empirical Decomposition across Communication-Constrained and Approximately Matched Compute Regimes: ").bold = True
+    p_r1.add_run("Under communication constraints (R = 8 rounds, ~256 local steps/client), Global FedAvg achieves an MAE of 0.0935 ± 0.0032. Eliminating statistical heterogeneity via IID shuffling reduces error to 0.0678 ± 0.0019. Relative to the centralized Attention-LSTM benchmark (0.0217), statistical heterogeneity accounts for 35.8% (0.0257) of the gap, while 64.2% (0.0461) reflects optimization under-training. Crucially, when scaled to an approximately matched compute budget (R = 15 rounds, E = 2, totaling 14,790 cumulative client updates vs 14,370 centralized steps, 102.9%), IID-Shuffled FedAvg converges rapidly to 0.0384 ± 0.0010 (47.5 bays), cutting the optimization gap by 63.8% (from 0.0461 to 0.0167). In contrast, Non-IID FedAvg at R = 15 reaches only 0.0858 ± 0.0015 (109.5 bays). Under matched compute parity, removing statistical heterogeneity closes 0.0474 of the 0.0641 gap—indicating that non-IID client statistical heterogeneity accounts for 73.9% (0.0474) of the performance deficit under this matched-compute protocol, while the residual optimization deficit shrinks to 26.1% (0.0167).")
 
     p_r2 = doc.add_paragraph(style='List Paragraph')
     p_r2.paragraph_format.space_before = Pt(2)
@@ -1024,10 +1030,16 @@ def build_manuscript():
     )
 
     add_p(
-        "To investigate these distinct mechanisms under matched optimization volume, we conducted compute-parity experiments (Table 3, Panel 2) scaling federated training to R = 15 rounds (E = 2, B = 32), totaling exactly 14,790 client-side gradient updates across the federation and 30 local epochs per client—achieving exact compute and epoch parity with the 30 centralized epochs. "
-        "At matched compute parity, the IID-shuffled control converges rapidly from 0.0678 ± 0.0019 down to 0.0384 ± 0.0010 (Mean Space Error falls from 90.4 to 47.5 bays), reducing the optimization gap to centralized Attention-LSTM by 63.8% (from 0.0461 to 0.0167). "
-        "In contrast, Non-IID FedAvg only improves to 0.0858 ± 0.0015 (109.5 bays). Consequently, once under-training is resolved through compute parity, eliminating non-IID client heterogeneity accounts for 73.9% of the remaining performance deficit (0.0474 out of 0.0641). "
-        "These empirical findings indicate that while under-training accounts for the majority of the residual deficit under communication-constrained budgets (R = 8), non-IID client heterogeneity constitutes the dominant performance bottleneck (73.9% of the deficit) when compute parity is enforced. However, matched optimizer-update counts do not render centralized and federated optimization trajectories identical, as decentralized client drift persists across local epochs. "
+        "Instead, our empirical investigation demonstrates that optimization under-training under communication round constraints interacts directly with non-IID statistical heterogeneity. "
+        "In an 8-round protocol, federated clients execute a system-wide total of 7,888 local Adam updates (~256 per client), representing 54.9% of the 14,370 optimization steps executed by the centralized model over 30 epochs. "
+        "At this communication-constrained budget, the IID-shuffled control (Table 3) indicates that statistical heterogeneity accounts for 35.8% of the performance deficit, while the remaining 64.2% residual deficit reflects optimization under-training."
+    )
+
+    add_p(
+        "To investigate these distinct mechanisms under matched optimization volume, we conducted compute-matched experiments (Table 3, Panel 2) scaling federated training to R = 15 rounds (E = 2, B = 32), totaling 14,790 client-side gradient updates across the federation (30 local epochs per client)—establishing an approximately matched optimizer-update budget (102.9% of centralized compute, a +2.9% difference) relative to the 14,370 centralized updates over 30 epochs. "
+        "At this approximately matched budget, the IID-shuffled control converges rapidly from 0.0678 ± 0.0019 down to 0.0384 ± 0.0010 (Mean Space Error falls from 90.4 to 47.5 bays), reducing the optimization gap to centralized Attention-LSTM by 63.8% (from 0.0461 to 0.0167). "
+        "In contrast, Non-IID FedAvg only improves to 0.0858 ± 0.0015 (109.5 bays). Consequently, once compute starvation is mitigated through this matched-update budget, eliminating non-IID client heterogeneity accounts for 73.9% of the remaining performance deficit (0.0474 out of 0.0641). "
+        "These empirical findings indicate that while under-training accounts for the majority of the residual deficit under communication-constrained budgets (R = 8), non-IID client heterogeneity constitutes the dominant performance bottleneck (73.9% of the deficit) when an approximately matched optimizer-update budget is provided. However, matched optimizer-update counts do not render centralized and federated optimization trajectories identical, as decentralized client drift persists across local epochs. "
         "Local personalization acts as a high-leverage algorithmic compensation mechanism: by fine-tuning the global recurrent features on lot-specific data, personalized FedAvg achieves an MAE of 0.0592 ± 0.0004 at R = 8 and 0.0548 ± 0.0012 at R = 15, recovering 47.8% to 51.7% of the centralized performance gap and compressing cross-facility variance (sigma) by over 51%."
     )
 
@@ -1127,7 +1139,7 @@ def build_manuscript():
         "and avoiding cross-facility data sharing. Under practical communication constraints (8 rounds, 2 local epochs), global FedAvg under-trains severely, "
         "achieving a 30-minute MAE of 0.0935 ± 0.0032 (118.5 macro bays in multi-seed evaluation, and 0.1006 / 126.8 bays in the primary single-seed benchmark). "
         "Our experimental decomposition indicates that this degradation is strongly consistent with optimization under-training under communication round constraints (~256 local Adam updates per client versus 14,370 centralized steps) alongside statistical heterogeneity: "
-        "an IID-shuffled federated control provides an empirical decomposition attributing 35.8% of the performance gap to statistical heterogeneity, with the remaining 64.2% residual deficit being strongly consistent with compute constraints (~256 local Adam updates per client versus 14,370 centralized steps) under the 8-round communication budget; matched compute-parity experiments (15 rounds, ~14,790 updates) further indicate that when compute starvation is mitigated, non-IID client heterogeneity accounts for 73.9% of the remaining deficit under this experimental protocol. "
+        "an IID-shuffled federated control provides an empirical decomposition attributing 35.8% of the performance gap to statistical heterogeneity, with the remaining 64.2% residual deficit being strongly consistent with compute constraints (~256 local Adam updates per client versus 14,370 centralized steps) under the 8-round communication budget; approximately matched compute-budget experiments (15 rounds, 14,790 cumulative client updates, 102.9% of centralized steps) further indicate that when compute starvation is mitigated, non-IID client heterogeneity accounts for 73.9% of the remaining deficit under this experimental protocol. "
         "Post-aggregation personalization fine-tuning mitigates this gap, reducing error to 0.0592 ± 0.0004 (82.4 macro bays; a 36.7% relative reduction over FedAvg, "
         "recovering 47.8% of the centralized gap in multi-seed evaluations and 50.6% in the primary single-seed benchmark), while compressing between-lot variance "
         "by 51.2%. Furthermore, network audits confirm that federating neural networks moves 110.35 MB (105.24 MiB) of weights across 8 rounds versus only 1.48 MB "
