@@ -653,7 +653,7 @@ def build_manuscript():
     p_b7.paragraph_format.space_before = Pt(2)
     p_b7.paragraph_format.space_after = Pt(2)
     p_b7.add_run("7. IID-Shuffled Federated Control: ").bold = True
-    p_b7.add_run("To isolate under-training from non-IID drift, the combined multi-lot training set is randomly partitioned into 30 uniform IID client slices, trained under identical parameters (R = 8, E = 2, B = 32).")
+    p_b7.add_run("To isolate under-training from non-IID drift, the combined multi-lot training set is randomly partitioned into 30 approximately equal-sized IID client partitions, trained under identical parameters (R = 8, E = 2, B = 32).")
 
     p_b8 = doc.add_paragraph(style='List Paragraph')
     p_b8.paragraph_format.space_before = Pt(2)
@@ -733,7 +733,7 @@ def build_manuscript():
         r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
 
     t2_data_30 = [
-        ("Persistence Baseline (y_hat = a_t)", "0.0256 ± 0.0000", "0.0387 ± 0.0000", "0.0247 ± 0.0000", "0.0135 ± 0.0000", "33.3 ± 0.0"),
+        ("Persistence Baseline (y_hat = a_t)", "0.0256 ± 0.0000", "0.0387 ± 0.0000", "0.0247 ± 0.0000", "0.0135 ± 0.0000", "33.4 ± 0.0"),
         ("Local-Only Linear AR(4) (Local isolation)", "0.0126 ± 0.0000", "0.0179 ± 0.0000", "0.0124 ± 0.0000", "0.0049 ± 0.0000", "13.9 ± 0.0"),
         ("Pooled Linear AR(4) (Centralized)", "0.0129 ± 0.0000", "0.0190 ± 0.0000", "0.0132 ± 0.0000", "0.0050 ± 0.0000", "14.8 ± 0.0"),
         ("Centralized XGBoost [4]", "0.0133 ± 0.0000", "0.0187 ± 0.0000", "0.0141 ± 0.0000", "0.0056 ± 0.0000", "15.8 ± 0.0"),
@@ -840,8 +840,8 @@ def build_manuscript():
         ("Communication-Constrained (R=8, E=2, 9,367 updates (including fine-tuning))", "Personalized FedAvg (Local Adaptation)", "0.0592 ± 0.0004", "0.0786 ± 0.0001", "0.0612 ± 0.0001", "0.0243 ± 0.0014", "82.4 ± 0.4"),
         ("Decomposition (R=8 Budget)", "Heterogeneity Gap: 0.0257 (35.8%) | IID-to-Centralized Residual: 0.0461 (64.2%) | Total Gap: 0.0718", "", "", "", "", ""),
         # Panel 2: R=15 Compute Parity
-        ("Matched Compute Budget (R=15, ~14,790 steps)", "Compute-Matched Global FedAvg (R=15, Non-IID)", "0.0858 ± 0.0015", "0.1139 ± 0.0011", "0.0889 ± 0.0016", "0.0465 ± 0.0007", "109.5 ± 1.8"),
-        ("Matched Compute Budget (R=15, ~14,790 steps)", "Compute-Matched IID-Shuffled FedAvg (R=15)", "0.0384 ± 0.0010", "0.0541 ± 0.0018", "0.0405 ± 0.0010", "0.0198 ± 0.0008", "47.5 ± 1.0"),
+        ("Matched Compute Budget (R=15, 14,790 updates)", "Compute-Matched Global FedAvg (R=15, Non-IID)", "0.0858 ± 0.0015", "0.1139 ± 0.0011", "0.0889 ± 0.0016", "0.0465 ± 0.0007", "109.5 ± 1.8"),
+        ("Matched Compute Budget (R=15, 14,430 updates)", "Compute-Matched IID-Shuffled FedAvg (R=15)", "0.0384 ± 0.0010", "0.0541 ± 0.0018", "0.0405 ± 0.0010", "0.0198 ± 0.0008", "47.5 ± 1.0"),
         ("Matched Compute Budget (R=15, 16,269 updates (including fine-tuning))", "Compute-Matched Personalized FedAvg (R=15)", "0.0548 ± 0.0012", "0.0741 ± 0.0022", "0.0565 ± 0.0015", "0.0222 ± 0.0022", "67.5 ± 1.6"),
         ("Decomposition (R=15 Budget)", "Heterogeneity Gap: 0.0474 (73.9%) | Residual Optimization Gap: 0.0167 (26.1%) | Total Gap: 0.0641", "", "", "", "", "")
     ]
