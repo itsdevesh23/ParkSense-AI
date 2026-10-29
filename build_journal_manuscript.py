@@ -667,30 +667,39 @@ def build_manuscript():
     p_b9.add_run("9. Personalized FedAvg (Local Adaptation): ").bold = True
     p_b9.add_run("Each client takes the aggregated global FedAvg model at round 8 and performs localized fine-tuning on its private training partition for 3 epochs using a reduced learning rate eta_{ft} = 0.0003, adapting weights to lot-specific baseline occupancies.")
 
-    add_h2("3.5 Compute Parity Audit: Disentangling Under-Training from Heterogeneity")
+    add_h2("3.5 Compute Accounting: Disentangling Optimization Budgets from Heterogeneity")
     add_p(
         "A critical consideration in interpreting federated empirical benchmarks is the disparity in cumulative gradient steps between centralized "
         "and federated configurations. In our setup, the centralized Attention-LSTM is trained for 30 epochs on 15,299 pooled sequences with batch size 32, "
-        "executing exactly 30 x ceil(15,299 / 32) = 30 x 479 = 14,370 Adam gradient updates. In contrast, under standard FedAvg with R = 8 rounds and "
-        "E = 2 local epochs, a client with an average dataset of approximately 510 training sequences (15,299 / 30 = 509.97) executes ceil(510 / 32) = 16 "
-        "batches per epoch, yielding 32 gradient steps per round and a cumulative total of approximately 256 local Adam updates per client across the entire training process."
+        "executing exactly 30 × ceil(15,299 / 32) = 30 × 479 = 14,370 Adam gradient updates. In contrast, under standard FedAvg with R = 8 rounds and "
+        "E = 2 local epochs per round, training is partitioned across the 30 municipal facilities. Because physical facility capacities and recorded telemetry vary "
+        "(ranging from 38 training sequences at the smallest lot to 562 at the largest), the number of mini-batches per epoch varies between 2 and 18 across clients, "
+        "summing to exactly 493 batches per epoch across the federation. Across 8 rounds (16 local epochs per client), the federation executes a system-wide total "
+        "of 7,888 client-side optimizer updates (493 × 16), which corresponds to an average of 262.9 (approximately 263) updates per client (ranging from 32 to 288 updates across facilities), "
+        "representing 54.9% of the 14,370 updates executed by the centralized model. (An idealized client with exactly 16 batches per epoch executes 256 updates over 8 rounds)."
     )
 
     add_p(
-        "Comparing cumulative system-wide optimizer updates provides a useful empirical proxy for training compute volume. "
-        "Across all 30 clients, the 8-round federated protocol executes a total of 7,888 client-side optimizer updates "
-        "(approximately 256 updates per client), representing 54.9% of the 14,370 updates executed by the centralized model over 30 epochs. "
-        "In contrast, the 15-round protocol scales to 14,790 cumulative client-side updates across the federation (approximately 493 updates per client), "
-        "achieving an approximately matched optimizer-update budget (102.9% of centralized compute, a +2.9% difference). "
+        "In the IID-shuffled control experiment, the 15,299 pooled sequences are randomly permuted and sliced into 29 partitions of 509 sequences and 1 partition of 538 sequences. "
+        "At batch size 32, the 29 uniform partitions yield ceil(509 / 32) = 16 batches per epoch, while the 30th partition yields ceil(538 / 32) = 17 batches per epoch, "
+        "summing to 481 batches per epoch across the 30 clients. Across 8 rounds (16 local epochs), the IID control executes exactly 481 × 16 = 7,696 client updates "
+        "(averaging 256.5 updates per client), representing 53.6% of centralized compute volume. "
+        "For Personalized FedAvg, base 8-round federated training executes the standard 7,888 updates, followed by 3 local fine-tuning epochs on each client's private training set. "
+        "These 3 fine-tuning epochs execute an additional 493 × 3 = 1,479 client updates across the federation (~49.3 updates per client), bringing the cumulative total for Personalized FedAvg "
+        "to 9,367 optimizer updates (averaging 312.2 updates per client; 65.2% of centralized compute)."
+    )
+
+    add_p(
+        "To evaluate performance when compute starvation is mitigated, we scale federated training to R = 15 rounds (E = 2, B = 32), totaling 14,790 cumulative client updates "
+        "for non-IID FedAvg (493 × 30, averaging 493.0 updates per client, 102.9% of centralized compute) and 14,430 updates for the IID-shuffled control (481 × 30, averaging 481.0 updates per client, 100.4% of centralized compute). "
+        "Personalized FedAvg under this 15-round regime executes 14,790 base updates plus 1,479 fine-tuning updates, totaling 16,269 updates (averaging 542.3 updates per client, 113.2% of centralized compute). "
         "We note that optimizer-update counts serve as a pragmatic compute proxy rather than proof of identical optimization dynamics, "
         "as decentralized client drift, localized mini-batches, and periodic parameter averaging induce distinct loss landscape trajectories. "
-        "Under the eight-round communication-constrained protocol, the difference between non-IID FedAvg and the IID-shuffled control "
-        "corresponds to 35.8% of the overall gap between non-IID FedAvg and the centralized benchmark. The remaining 64.2% is the "
-        "IID-shuffled-to-centralized residual, which is consistent with optimization under-training but cannot be attributed to under-training "
-        "alone. Extending rounds to the approximately matched 15-round budget shifts this balance, where the observed difference associated with "
-        "non-IID versus IID-shuffled configurations accounts for 73.9% of the remaining deficit once compute starvation is mitigated (Section 4.2 and Section 5.2). "
-        "Because FedAvg test error improves gradually when communication rounds are extended, strict round limits impose substantial "
-        "optimization friction on decentralized convergence."
+        "Under the eight-round communication-constrained protocol, the difference between non-IID FedAvg and the IID-shuffled control corresponds to 35.8% of the overall gap between non-IID FedAvg and the centralized benchmark. "
+        "The remaining 64.2% is the IID-shuffled-to-centralized residual, which is consistent with optimization under-training but cannot be attributed to under-training alone. "
+        "Extending rounds to the approximately matched 15-round budget shifts this balance, where the observed difference associated with non-IID versus IID-shuffled configurations accounts for "
+        "73.9% of the remaining deficit once compute starvation is mitigated (Section 4.2 and Section 5.2). "
+        "Because FedAvg test error improves gradually when communication rounds are extended, strict round limits impose substantial optimization friction on decentralized convergence."
     )
 
     # ==================== 4. EXPERIMENTAL RESULTS ====================
@@ -881,23 +890,21 @@ def build_manuscript():
     p_t3_note = add_p(space_after=4)
     r_t3_note = p_t3_note.add_run(
         "Note: All metrics report multi-seed mean ± std across seeds {42, 101, 2024}. "
-        "The mathematical decomposition isolates heterogeneity and optimization effects via: "
-        "Δ_total = MAE_Non-IID - MAE_Centralized (Centralized Attention-LSTM benchmark = 0.0217 ± 0.0004); "
+        "Cumulative optimizer updates across the 30 clients: "
+        "Centralized model = 14,370 updates (30 epochs × 479 batches); "
+        "Panel 1 (R=8): Global FedAvg, FedProx, and FedPer execute 7,888 client updates across the 30 facilities (493 batches/epoch × 16 epochs, averaging 262.9 updates/client, 54.9% of centralized compute); "
+        "IID-Shuffled FedAvg executes 7,696 client updates (481 batches/epoch × 16 epochs across 29 clients of 509 samples and 1 of 538, averaging 256.5 updates/client, 53.6% of centralized compute); "
+        "Personalized FedAvg includes 3 post-aggregation local fine-tuning epochs adding 1,479 updates (493 × 3), totaling 9,367 client updates across the federation (averaging 312.2 updates/client, 65.2% of centralized compute). "
+        "Panel 2 (R=15 Matched Budget): Non-IID FedAvg executes 14,790 updates (493 × 30 epochs, averaging 493.0 updates/client, 102.9% of centralized compute); "
+        "IID-Shuffled FedAvg executes 14,430 updates (481 × 30 epochs, averaging 481.0 updates/client, 100.4% of centralized compute); "
+        "Personalized FedAvg executes 14,790 base + 1,479 fine-tuning = 16,269 updates (averaging 542.3 updates/client, 113.2% of centralized compute). "
+        "Decomposition formula: Δ_total = MAE_Non-IID - MAE_Centralized (Centralized Attention-LSTM = 0.0217 ± 0.0004); "
         "Δ_heterogeneity = MAE_Non-IID - MAE_IID-Shuffled; "
         "Δ_optimization = MAE_IID-Shuffled - MAE_Centralized. "
-        "Seed-level results: "
-        "Panel 1 (R=8): Global FedAvg MAE = [0.0970 (seed 42), 0.0925 (seed 101), 0.0908 (seed 2024)]; "
-        "IID-Shuffled FedAvg MAE = [0.0659, 0.0677, 0.0698]; "
-        "Personalized FedAvg MAE = [0.0596, 0.0593, 0.0587]. "
-        "Panel 2 (R=15 Compute Parity): Non-IID FedAvg MAE = [0.0857 (seed 42), 0.0874 (seed 101), 0.0844 (seed 2024)]; "
-        "IID-Shuffled FedAvg MAE = [0.0372, 0.0389, 0.0390]; "
-        "Personalized FedAvg MAE = [0.0535, 0.0558, 0.0551]. "
-        "Under the eight-round communication-constrained protocol, the difference between non-IID FedAvg and the IID-shuffled control "
-        "corresponds to 35.8% of the overall gap to the centralized benchmark, while the remaining 64.2% represents the IID-shuffled-to-centralized "
-        "residual (consistent with under-training, but not uniquely attributable to under-training alone). "
-        "When scaled to an approximately matched optimizer-update budget (R=15, 14,790 cumulative updates vs 14,370 centralized steps, 102.9%), "
-        "mitigating compute starvation allows IID FedAvg to converge to 0.0384 ± 0.0010, with the observed difference associated with non-IID versus "
-        "IID-shuffled configurations accounting for 73.9% of the remaining deficit under this matched-budget protocol."
+        "Seed-level results: Panel 1 (R=8): Non-IID = [0.0970, 0.0925, 0.0908]; IID-Shuffled = [0.0659, 0.0677, 0.0698]; Personalized = [0.0596, 0.0593, 0.0587]. "
+        "Panel 2 (R=15): Non-IID = [0.0857, 0.0874, 0.0844]; IID-Shuffled = [0.0372, 0.0389, 0.0390]; Personalized = [0.0535, 0.0558, 0.0551]. "
+        "Under the 8-round protocol, the difference between non-IID FedAvg and the IID control corresponds to 35.8% of the gap to centralized accuracy, while the remaining 64.2% is the IID-to-centralized residual (consistent with under-training, but not uniquely attributable to under-training alone). "
+        "Under the approximately matched 15-round budget, mitigating compute starvation allows IID FedAvg to converge to 0.0384 ± 0.0010, with the observed difference associated with non-IID versus IID-shuffled configurations accounting for 73.9% of the remaining deficit under this matched-budget protocol."
     )
     r_t3_note.font.size = Pt(8)
     r_t3_note.font.italic = True
@@ -1090,7 +1097,7 @@ def build_manuscript():
     t5_rows = [
         ("Parameter Count", "57,474 weights (224.51 KiB / 229.90 KB)", "57,474 weights (224.51 KiB / 229.90 KB)", "5 scalar parameters (20 bytes) per lot"),
         ("Total Network Data Moved", "1.48 MB / 1.41 MiB (raw CSV stream)", "110.35 MB / 105.24 MiB (480 transfers)", "0.00 B (strictly zero communication)"),
-        ("Total Local Gradient Steps", "14,370 Adam steps (pooled)", "~256 Adam steps per client", "1 closed-form Ridge solve per lot"),
+        ("Total Local Gradient Steps", "14,370 Adam steps (pooled 30 epochs)", "7,888 updates across federation (avg 262.9 steps/client)", "1 closed-form Ridge solve per lot (0 gradient steps)"),
         ("Privacy & Governance", "Centralized exposure (all data pooled in cloud)", "Decentralized containment (data stays on edge nodes)", "Local isolation (avoids cross-facility data sharing, no federation)")
     ]
 
